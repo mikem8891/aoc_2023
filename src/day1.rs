@@ -1,4 +1,4 @@
- fn trebuchet_calibration(cal_doc: &str) -> u64 {
+ pub fn trebuchet_calibration(cal_doc: &str) -> u64 {
      let mut sum = 0;
      for line in cal_doc.lines() {
          let mut nums = line.chars().filter(|c| c.is_digit(10));
@@ -13,9 +13,11 @@
  
  #[cfg(test)]
  mod test{
+    use super::*;
+
     #[test]
     fn example(){
-        input = 
+        let input = 
 r#"1abc2
 pqr3stu8vwx
 a1b2c3d4e5f

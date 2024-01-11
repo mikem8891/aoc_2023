@@ -1,12 +1,31 @@
- 
- 
- fn snow_island_game(game_rec: &str) -> u64 {
+ pub fn snow_island_game(game_rec: &str) -> u64 {
     let mut sum = 0;
     const GAME_BAG: [u64; 3] = [12, 13, 14];
     for game in game_rec.lines() {
-        let game = game.split(':');
-        let game_id: u64 = game[5..].parse().unwrap();
-        
+        let mut game = game.split(':');
+        let game_id: u64 = game.next().unwrap()[5..].parse().unwrap();
+        let subsets_of_cubes = game.next().unwrap();
+        let mut max_colors = [0, 0, 0];
+        for subset_of_cubes in subsets_of_cubes.split(';') {
+            for num_color in subset_of_cubes.split(',') {
+                let mut num_color = num_color.split(' ').filter(|s| !s.is_empty());
+                let num: u64 = num_color.next().unwrap().parse().unwrap();
+                let color = num_color.next().unwrap();
+                match color {
+                    "red"   => max_colors[0] = std::cmp::max(max_colors[0], num),
+                    "green" => max_colors[1] = std::cmp::max(max_colors[1], num),
+                    "blue"  => max_colors[2] = std::cmp::max(max_colors[2], num),
+                    _ => panic!("Game {game_id} has an invalid color")
+                }
+            }
+        }
+        let used_game_bag = 
+            max_colors[0] <= GAME_BAG[0] &&
+            max_colors[1] <= GAME_BAG[1] &&
+            max_colors[2] <= GAME_BAG[2];
+        if used_game_bag {
+            sum += game_id;
+        }
     }
     sum
  }
