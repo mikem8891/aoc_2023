@@ -12,7 +12,7 @@
  }
  
  pub fn trebuchet_calibration(cal_doc: &str) -> u64 {
-    const VALID_NUMS: [(u8, &str); 9] = [
+    const NUM_WORDS: [(u8, &str); 9] = [
         (1, "one"), (2, "two"), (3, "three"), (4, "four"), (5, "five"),
         (6, "six"), (7, "seven"), (8, "eight"), (9, "nine")
     ];
@@ -25,6 +25,13 @@
         if let Some(index) = line[..end].find(is_digit) {
             end = index;
             first_digit = num_at(index);
+        }
+        if let Some(index) = line[begin..].rfind(is_digit) {
+            begin = index;
+            last_digit = num_at(index);
+        }
+        for (num, word) in NUM_WORDS {
+            
         }
     }
      
