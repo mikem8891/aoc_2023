@@ -3,7 +3,9 @@ use std::fs;
 mod day1;
 
 fn main() {
-    let file_path = "./inputs/day1.txt";
-    let contents = fs::read_to_string(file_path).expect("Please provide valid file name");
-    println!("{contents}");
+    println!("Day 1");
+    let mut file_path = "./inputs/day1.txt";
+    let mut contents = fs::read_to_string(file_path)
+        .expect("Day 1 input not found");
+
 }
