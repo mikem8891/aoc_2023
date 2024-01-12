@@ -11,7 +11,7 @@
      sum
  }
  
- pub fn trebuchet_calibration(cal_doc: &str) -> u64 {
+ pub fn trebuchet_calibration_p2(cal_doc: &str) -> u64 {
     const NUM_WORDS: [(u8, &str); 9] = [
         (1, "one"), (2, "two"), (3, "three"), (4, "four"), (5, "five"),
         (6, "six"), (7, "seven"), (8, "eight"), (9, "nine")
@@ -61,4 +61,19 @@ treb7uchet"#;
         println!("sum is {sum}");
         assert_eq!(sum, 142);
     }
- }
+    
+    #[test]
+    fn example_p2(){
+        let input = 
+r#"two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen"#;
+        let sum = trebuchet_calibration_p2(input);
+        println!("sum is {sum}");
+        assert_eq!(sum, 142);
+    }
+}
