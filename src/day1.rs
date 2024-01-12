@@ -31,7 +31,10 @@
             last_digit = num_at(index);
         }
         for (num, word) in NUM_WORDS {
-            
+            if let Some(index) = line[..end].find(word) {
+                end = index + word.len();
+                first_digit = num;
+            }
         }
     }
      
