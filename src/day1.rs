@@ -58,8 +58,7 @@ pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet"#;
         let sum = trebuchet_calibration(input);
-        println!("sum is {sum}");
-        assert_eq!(sum, 142);
+        assert_eq!(sum, 142, "sum is {sum}");
     }
     
     #[test]
@@ -73,7 +72,7 @@ xtwone3four
 zoneight234
 7pqrstsixteen"#;
         let sum = trebuchet_calibration_p2(input);
-        println!("sum is {sum}");
-        assert_eq!(sum, 142);
+
+        assert_eq!(sum, 281, "sum is {sum}");
     }
 }
