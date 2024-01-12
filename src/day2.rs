@@ -50,7 +50,7 @@ pub fn snow_island_game_p2(game_rec: &str) -> u64 {
                 }
             }
         }
-        let power = max_colors.fold(|p, c| p * c, 1);
+        let power: u64 = max_colors.iter().product();
         sum += power;
     }
     sum
@@ -58,6 +58,8 @@ pub fn snow_island_game_p2(game_rec: &str) -> u64 {
  
 #[cfg(test)]
 mod test{
+    use super::*;
+
     #[test]
     fn example(){
     }
