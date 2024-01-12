@@ -72,7 +72,6 @@ xtwone3four
 zoneight234
 7pqrstsixteen"#;
         let sum = trebuchet_calibration_p2(input);
-
         assert_eq!(sum, 281, "sum is {sum}");
     }
 }
