@@ -30,8 +30,14 @@
     sum
  }
  
- #[cfg(test)]
- mod test{
+pub fn snow_island_game_p2(game_rec: &str) -> u64 {
+    let mut sum = 0;
+    
+    sum
+}
+ 
+#[cfg(test)]
+mod test{
     #[test]
     fn example(){
     }
