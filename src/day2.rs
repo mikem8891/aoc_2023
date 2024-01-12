@@ -39,8 +39,19 @@ pub fn snow_island_game_p2(game_rec: &str) -> u64 {
         let mut max_colors = [0, 0, 0];
         for subset_of_cubes in subsets_of_cubes.split(';') {
             for num_color in subset_of_cubes.split(',') {
+                let mut num_color = num_color.split(' ').filter(|s| !s.is_empty());
+                let num: u64 = num_color.next().unwrap().parse().unwrap();
+                let color = num_color.next().unwrap();
+                match color {
+                    "red"   => max_colors[0] = std::cmp::max(max_colors[0], num),
+                    "green" => max_colors[1] = std::cmp::max(max_colors[1], num),
+                    "blue"  => max_colors[2] = std::cmp::max(max_colors[2], num),
+                    _ => panic!("Game {game_id} has an invalid color")
+                }
             }
         }
+        let power = max_colors.fold(|p, c| p * c, 1);
+        sum += power;
     }
     sum
 }
