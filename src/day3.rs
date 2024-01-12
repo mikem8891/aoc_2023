@@ -1,5 +1,6 @@
-pub fn day3(input: &str) -> u64 {
-    
+pub fn part_nums(eng_schem: &str) -> u64 {
+    let mut sum = 0;
+    sum
 }
 
 #[cfg(test)]
