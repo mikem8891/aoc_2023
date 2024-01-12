@@ -17,5 +17,7 @@ fn main() {
     println!("part 1: sum is {}", day2::snow_island_game(&contents));
     println!("part 2: sum is {}", day2::snow_island_game_p2(&contents));
     println!("Day 3");
-    
+    let file_path = "./inputs/day3.txt";
+    let contents = fs::read_to_string(file_path)
+        .expect("Day 3 input not found");
 }
