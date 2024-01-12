@@ -41,7 +41,7 @@
             }
         }
         let two_digit_num = 10 * first_digit.unwrap() + last_digit.unwrap();
-        sum += two_digit_num as u64
+        sum += two_digit_num as u32;
     }
     sum
  }
