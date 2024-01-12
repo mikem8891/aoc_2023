@@ -19,7 +19,7 @@
     let mut sum = 0;
     for line in cal_doc.lines() {
         let is_digit = |c: char| c.is_ascii_digit();
-        let num_at = |i| line[i..].as_bytes()[0] & 0x0F;
+        let num_at = |i| Some(line[i..].as_bytes()[0] & 0x0F);
         let [mut first_digit, mut last_digit]: [Option<u8>; 2] = [None, None];
         let [mut begin, mut end] = [0, line.len()];
         if let Some(index) = line[..end].find(is_digit) {
@@ -33,11 +33,16 @@
         for (num, word) in NUM_WORDS {
             if let Some(index) = line[..end].find(word) {
                 end = index + word.len();
-                first_digit = num;
+                first_digit = Some(num);
+            }
+            if let Some(index) = line[begin..].rfind(word) {
+                begin = index;
+                last_digit = Some(num);
             }
         }
+        let two_digit_num = 10 * first_digit.unwrap() + last_digit.unwrap();
+        sum += two_digit_num as u64
     }
-     
     sum
  }
  
