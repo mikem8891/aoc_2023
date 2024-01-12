@@ -11,7 +11,7 @@
      sum
  }
  
- pub fn trebuchet_calibration_p2(cal_doc: &str) -> u32 {
+ pub fn trebuchet_calibration_p2(cal_doc: &str) -> Option<u32> {
     const NUM_WORDS: [(u8, &str); 9] = [
         (1, "one"), (2, "two"), (3, "three"), (4, "four"), (5, "five"),
         (6, "six"), (7, "seven"), (8, "eight"), (9, "nine")
@@ -22,11 +22,11 @@
         let num_at = |i| Some(line[i..].as_bytes()[0] & 0x0F);
         let [mut first_digit, mut last_digit]: [Option<u8>; 2] = [None, None];
         let [mut begin, mut end] = [0, line.len()];
-        if let Some(index) = line[..end].find(is_digit) {
-            end = index;
+        if let Some(index) = line.find(is_digit) {
+            end = index + 1;
             first_digit = num_at(index);
         }
-        if let Some(index) = line[begin..].rfind(is_digit) {
+        if let Some(index) = line.rfind(is_digit) {
             begin = index;
             last_digit = num_at(index);
         }
@@ -36,14 +36,14 @@
                 first_digit = Some(num);
             }
             if let Some(index) = line[begin..].rfind(word) {
-                begin = index;
+                begin += index;
                 last_digit = Some(num);
             }
         }
-        let two_digit_num = 10 * first_digit.unwrap() + last_digit.unwrap();
+        let two_digit_num = 10 * first_digit? + last_digit?;
         sum += two_digit_num as u32;
     }
-    sum
+    Some(sum)
  }
  
  #[cfg(test)]
@@ -71,7 +71,7 @@ xtwone3four
 4nineeightseven2
 zoneight234
 7pqrstsixteen"#;
-        let sum = trebuchet_calibration_p2(input);
+        let sum = trebuchet_calibration_p2(input).unwrap();
         assert_eq!(sum, 281, "sum is {sum}");
     }
 }
