@@ -8,7 +8,8 @@ fn main() {
     let file_path = "./inputs/day1.txt";
     let contents = fs::read_to_string(file_path)
         .expect("Day 1 input not found");
-    println!("sum is {}", day1::trebuchet_calibration(&contents));
+    println!("part 1: sum is {}", day1::trebuchet_calibration(&contents));
+    println!("part 2: sum is {}", day1::trebuchet_calibration_p2(&contents));
     println!("Day 2");
     let file_path = "./inputs/day2.txt";
     let contents = fs::read_to_string(file_path)
