@@ -24,7 +24,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                 ];
                 for (r, c_range) in ranges {
                     for c in c_range {
-                        if let Some(b) = eng_schem.get(r).map(|row| row.get(c)).flatten() {
+                        if let Some(b) = eng_schem.get(r).map(|row| row.as_bytes().get(c)).flatten() {
                             if b != b'.' {
                                 break 'find true;
                             }
