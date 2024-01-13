@@ -32,18 +32,6 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                     }
                 }
                 false
-                for c in ((start - 1)..(end + 1)).filter(|c| in_range(num_row - 1, *c)) {
-                    if eng_schem[num_row - 1].as_bytes()[c] != b'.' {
-                        break 'find true;
-                    }
-                }
-                if (in_range(num_row, start - 1) && 
-                    eng_schem[num_row].as_bytes()[start - 1] != b'.') ||
-                    (in_range(num_row, end) && 
-                    eng_schem[num_row].as_bytes()[end] != b'.') {
-                    break 'find true;
-                }
-                false
             };
 
         }
