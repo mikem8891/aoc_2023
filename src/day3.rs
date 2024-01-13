@@ -11,10 +11,21 @@ pub fn part_nums(eng_schem: &str) -> u64 {
         let mut end = 0;
         while let Some(start) = eng_schem[num_row][end..].find(is_digit) {
             end = start + eng_schem[num_row][start..].find(is_not_digit).unwrap();
-            let mut part = false;
-            for c in ((start - 1)..(end + 1)).filter(|c| in_range(num_row - 1, *c)) {
-                part = !matches!(eng_schem[num_row].as_bytes()[c], b'.' | b'0'..=b'9');
-            }
+            let mut part = 'find: {
+                for c in ((start - 1)..(end + 1)).filter(|c| in_range(num_row - 1, *c)) {
+                    if eng_schem[num_row - 1].as_bytes()[c] != b'.' {
+                        break 'find true;
+                    }
+                }
+                if in_range(num_row, start - 1) && eng_schem[num_row].as_bytes()[start - 1] != b'.' {
+                    break 'find true;
+                }
+                if in_range(num_row, end) && eng_schem[num_row].as_bytes()[end] != b'.' {
+                    break 'find true;
+                }
+                false
+            };
+
         }
     }
     
