@@ -3,9 +3,9 @@ use crate::util::*;
 pub fn part_nums(eng_schem: &str) -> u64 {
     let mut sum = 0;
     let eng_schem: Vec<&str> = eng_schem.lines().collect();
-    let is_in_range = |r: usize, c: usize| { 
-        c >= 0 && c < eng_schem[r].len() &&
-        r >= 0 && r < eng_schem.len()
+    let is_in_range = |r: isize, c: isize| { 
+        c >= 0 && (c as usize) < eng_schem[r].len() &&
+        r >= 0 && (r as usize) < eng_schem.len()
     };
     let is_part_at = |r, c| {
         is_in_range(r, c) &&
@@ -25,6 +25,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                 for (r, c_range) in ranges {
                     for c in c_range {
                         if is_in_range(r, c) {
+                            let (r, c) = (r as usize, c as usize);
                             if eng_schem[r].as_bytes()[c] != &b'.' {
                                 break 'find true;
                             }
