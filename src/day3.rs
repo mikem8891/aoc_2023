@@ -26,7 +26,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                     for c in c_range {
                         if is_in_range(r, c) {
                             let (r, c) = (r as usize, c as usize);
-                            if eng_schem[r].as_bytes()[c] != &b'.' {
+                            if eng_schem[r].as_bytes()[c] != b'.' {
                                 break 'find true;
                             }
                         }
