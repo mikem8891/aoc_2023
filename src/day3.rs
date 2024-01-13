@@ -16,7 +16,22 @@ pub fn part_nums(eng_schem: &str) -> u64 {
         while let Some(start) = eng_schem[num_row][end..].find(is_digit) {
             end = start + eng_schem[num_row][start..].find(is_not_digit).unwrap();
             let mut part = 'find: {
-                
+                let ranges = [
+                    (num_row - 1, (start - 1)..(end + 1)),
+                    (num_row    , (start - 1)..(start  )),
+                    (num_row    , (end      )..(end + 1)),
+                    (num_row + 1, (start - 1)..(end + 1))
+                ];
+                for (r, c_range) in ranges {
+                    for c in c_range {
+                        if let Some(b) = eng_schem.get(r).map(|row| row.get(c)).flatten() {
+                            if b != b'.' {
+                                break 'find true;
+                            }
+                        }
+                    }
+                }
+                false
                 for c in ((start - 1)..(end + 1)).filter(|c| in_range(num_row - 1, *c)) {
                     if eng_schem[num_row - 1].as_bytes()[c] != b'.' {
                         break 'find true;
