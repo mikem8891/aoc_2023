@@ -10,7 +10,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
     for num_row in 0..eng_schem.len() {
         let start = 0;
         while let Some(num_col) = eng_schem[num_row][start..].find(is_digit) {
-            
+            start += num_col;
         }
     }
     
