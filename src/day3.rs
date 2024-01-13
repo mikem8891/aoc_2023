@@ -9,13 +9,13 @@ pub fn part_nums(eng_schem: &str) -> u64 {
     };
     let is_part_at = |r, c| {
         is_in_range(r, c) &&
-        eng_schem[r].as_bytes()[c] != b'.')
+        eng_schem[r].as_bytes()[c] != b'.';
     };
     for num_row in 0..eng_schem.len() {
         let mut end = 0;
         while let Some(start) = eng_schem[num_row][end..].find(is_digit) {
             end = start + eng_schem[num_row][start..].find(is_not_digit).unwrap();
-            let mut part = 'find: {
+            let is_part = 'find: {
                 let ranges = [
                     (num_row - 1, (start - 1)..(end + 1)),
                     (num_row    , (start - 1)..(start  )),
@@ -25,7 +25,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                 for (r, c_range) in ranges {
                     for c in c_range {
                         if let Some(b) = eng_schem.get(r).map(|row| row.as_bytes().get(c)).flatten() {
-                            if b != b'.' {
+                            if b != &b'.' {
                                 break 'find true;
                             }
                         }
@@ -33,19 +33,32 @@ pub fn part_nums(eng_schem: &str) -> u64 {
                 }
                 false
             };
-
+            if is_part {
+                sum += eng_schem[num_row][start..end].parse::<u64>().unwrap();
+            }
         }
     }
-    
     sum
 }
 
 
 #[cfg(test)]
 mod test {
-    
+    use super::*;
+
     #[test]
     fn example() {
-        
+        let input =
+r#"467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598.."#;
+        assert_eq!(4361, part_nums(input));
     }
 }
