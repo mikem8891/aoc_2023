@@ -13,7 +13,7 @@ pub fn part_nums(eng_schem: &str) -> u64 {
     };
     for num_row in 0..eng_schem.len() {
         let mut end = 0;
-        while let Some(start) = eng_schem[num_row][end..].find(is_digit) {
+        while let Some(start) = eng_schem[num_row][end..].find(is_digit) 'num: {
             end = start + eng_schem[num_row][start..].find(is_not_digit).unwrap();
             let is_part = 'find: {
                 let ranges: [(isize, Range<isize>); 4] = [
