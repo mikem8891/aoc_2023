@@ -1,20 +1,21 @@
-use crate::util::*;
+use std::collections::HashSet;
+//use crate::util::*;
 
 pub fn solve(input: &str) -> (u64, u64) {
     let (mut sum_1, mut sum_2)  = (0, 0);
-    for game in input.line() {
-        let nums = game.split(':').nth(1).unwrap().split('|');
+    for game in input.lines() {
+        let mut nums = game.split(':').nth(1).unwrap().split('|');
         let win_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
-            .fold(HashSet::new(), |s, n| s.insert(n));
+            .collect::<HashSet<_>>();
         let elf_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
             .filter(|n| win_nums.contains(n))
-            .fold(vec![], |v, n| v.push(n));
+            .collect::<Vec<_>>();
         if !elf_nums.is_empty() {
-            sum_1 += (1 << elf_nums.len()) as u64;
+            sum_1 += (1 << (elf_nums.len() - 1)) as u64;
         }
     }
     (sum_1, sum_2)

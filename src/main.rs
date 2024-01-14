@@ -29,6 +29,7 @@ fn main() {
     let file_path = "./inputs/day4.txt";
     let contents = fs::read_to_string(file_path)
         .expect("Day 4 input not found");
-    println!("part 1: sum is {}", day4::part_1(&contents));
-    println!("part 2: sum is {}", day4::part_2(&contents));
+    let (part_1, part_2) = day4::solve(&contents);
+    println!("part 1: sum is {}", part_1);
+    println!("part 2: sum is {}", part_2);
 }
