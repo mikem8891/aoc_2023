@@ -23,4 +23,5 @@ fn main() {
     let contents = fs::read_to_string(file_path)
         .expect("Day 3 input not found");
     println!("part 1: sum is {}", day3::part_nums(&contents));
+    println!("part 2: sum is {}", day3::part_2(&contents));
 }
