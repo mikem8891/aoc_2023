@@ -11,7 +11,8 @@ pub fn solve(input: &str) -> (u64, u64) {
         let elf_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
-            ;
+            .filter(|n| win_nums.contains(n))
+            .fold(vec![], |v, n| v.push(n));
     }
     (sum_1, sum_2)
 }
