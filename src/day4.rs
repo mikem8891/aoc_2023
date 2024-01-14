@@ -4,7 +4,11 @@ pub fn solve(input: &str) -> (u64, u64) {
     let (mut sum_1, mut sum_2)  = (0, 0);
     for game in input.line() {
         let nums = game.split(':').nth(1).unwrap().split('|');
-        let win_nums = nums.next().unwrap();
+        let win_nums = nums.next().unwrap()
+            .split(' ').filter(|s| !s.is_empty())
+            .parse::<u64>().unwrap()
+            .fold(HashSet::new(), |s, n| s.insert(n));
+        
         let elf_nums = nums.next().unwrap();
     }
     (sum_1, sum_2)
