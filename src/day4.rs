@@ -13,6 +13,9 @@ pub fn solve(input: &str) -> (u64, u64) {
             .map(|s| s.parse::<u64>().unwrap())
             .filter(|n| win_nums.contains(n))
             .fold(vec![], |v, n| v.push(n));
+        if !elf_nums.is_empty() {
+            sum_1 += (1 << elf_nums.len()) as u64;
+        }
     }
     (sum_1, sum_2)
 }
