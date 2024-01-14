@@ -3,8 +3,10 @@ use std::collections::HashSet;
 
 pub fn solve(input: &str) -> (u64, u64) {
     let (mut sum_1, mut sum_2)  = (0, 0);
+    let game_cards = HashMap::new();
     for game in input.lines() {
-        let mut nums = game.split(':').nth(1).unwrap().split('|');
+        let game_id: u64 = game.next().unwrap()[5..].parse().unwrap()
+        let mut nums = game.split(':').next().unwrap().split('|');
         let win_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
@@ -17,6 +19,7 @@ pub fn solve(input: &str) -> (u64, u64) {
         if !elf_nums.is_empty() {
             sum_1 += (1 << (elf_nums.len() - 1)) as u64;
         }
+        
     }
     (sum_1, sum_2)
 }
