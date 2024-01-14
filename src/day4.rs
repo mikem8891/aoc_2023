@@ -6,10 +6,12 @@ pub fn solve(input: &str) -> (u64, u64) {
         let nums = game.split(':').nth(1).unwrap().split('|');
         let win_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
-            .parse::<u64>().unwrap()
+            .map(|s| s.parse::<u64>().unwrap())
             .fold(HashSet::new(), |s, n| s.insert(n));
-        
-        let elf_nums = nums.next().unwrap();
+        let elf_nums = nums.next().unwrap()
+            .split(' ').filter(|s| !s.is_empty())
+            .map(|s| s.parse::<u64>().unwrap())
+            ;
     }
     (sum_1, sum_2)
 }
