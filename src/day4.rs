@@ -1,17 +1,18 @@
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 //use crate::util::*;
 
 pub fn solve(input: &str) -> (u64, u64) {
     let mut sum_1  = 0;
-    let mut game_cards = HashMap::new::<u64, u64>();
+    let mut game_cards = HashMap::new();
     for game in input.lines() {
-        let game = game.split(':');
+        let mut game = game.split(':');
         let game_id: u64 = game.next().unwrap()
             .split(' ').last().unwrap()
             .parse().unwrap();
-        game_card_num = game_cards.entry(game_id).or_insert(0);
+        let game_card_num = game_cards.entry(game_id).or_insert(0);
         *game_card_num += 1;
-        let mut nums = game..next().unwrap().split('|');
+        let game_card_num = *game_card_num;
+        let mut nums = game.next().unwrap().split('|');
         let win_nums = nums.next().unwrap()
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
@@ -20,7 +21,7 @@ pub fn solve(input: &str) -> (u64, u64) {
             .split(' ').filter(|s| !s.is_empty())
             .map(|s| s.parse::<u64>().unwrap())
             .filter(|n| win_nums.contains(n))
-            .collect::<Vec<_>>().len();
+            .collect::<Vec<_>>().len() as u64;
         if elf_nums != 0 {
             sum_1 += (1 << (elf_nums - 1)) as u64;
         }
@@ -30,7 +31,7 @@ pub fn solve(input: &str) -> (u64, u64) {
             *new_game_card_num += game_card_num;
         }
     }
-    let sum_2 = game_cards.iter().map(|(k, v)| v).sum();
+    let sum_2 = game_cards.iter().map(|(_k, v)| v).sum();
     (sum_1, sum_2)
 }
 
