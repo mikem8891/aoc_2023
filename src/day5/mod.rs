@@ -1,6 +1,8 @@
 const DAY_NUM: &str = "5";
 
 fn solve(input: &str) -> [String; 2] {
+
+    
     todo!();
 }
 
