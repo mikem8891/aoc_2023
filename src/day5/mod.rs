@@ -2,7 +2,7 @@ const DAY_NUM: &str = "5";
 
 fn solve(input: &str) -> [String; 2] {
     let (seeds, almanac) = input.split_once("\n\n").unwrap();
-    let seeds = seeds.split(' ')
+    let seeds: Vec<u64> = seeds.split(' ')
         .filter_map(|s| s.parse::<u64>().ok())
         .collect();
     todo!();
