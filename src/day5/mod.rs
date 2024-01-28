@@ -6,16 +6,10 @@ struct SeedMap(Vec<[u64; 3]>);
 
 impl SeedMap {
     fn get(&self, input: u64) -> u64 {
-        let in_range = |sm| 0 <= input && input < sm[2];
-        let result = self.map(|s| input - s[1])
+        self.map(|s| input - s[1])
             .filter(|r| 0 <= input && input < r[2])
             .map(|d| input + d[0])
-            .next();
-        if let Some(output) = result {
-            output
-        } else {
-            input
-        }
+            .next().unwrap_or(input);
     }
 }
 
@@ -34,17 +28,20 @@ fn seed_map(text: &str) -> (String, SeedMap) {
 
 fn solve(input: &str) -> [String; 2] {
     let (seeds, almanac) = input.split_once("\n\n").unwrap();
-    let seeds: Vec<u64> = seeds.split(' ')
+    let mut seeds: Vec<u64> = seeds.split(' ')
         .filter_map(|s| s.parse::<u64>().ok())
         .collect();
     let seed_maps: HashMap<_, _> = almanac.split("/n/n")
         .map(seed_map)
         .collect();
-    const MAP_ORDER: [&str; ] = [
+    let map_seeds = |s: Vec<u64>, m: SeedMap| 
+        s.map(m.get).collect::<Vec<_>>();
+    const MAP_ORDER: [&str; N] = [
         ""
     ];
-    
-    todo!();
+    let locations = MAP_ORDER.map(|n| seed_maps[n.to_owned])
+        .fold(seeds, map_seeds);
+    location.min()
 }
 
 pub fn main() {
