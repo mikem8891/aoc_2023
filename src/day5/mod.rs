@@ -41,7 +41,7 @@ fn solve(input: &str) -> [String; 2] {
     ];
     let locations = MAP_ORDER.map(|n| seed_maps[n.to_owned])
         .fold(seeds, map_seeds);
-    location.min()
+    [location.min().to_string(), "todo"]
 }
 
 pub fn main() {
