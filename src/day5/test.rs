@@ -1,4 +1,4 @@
-const EXAMPLE_SOLUTION: [&str; 2] = ["", ""];
+const EXAMPLE_SOLUTION: [&str; 2] = ["35", ""];
 
 use super::*;
 
