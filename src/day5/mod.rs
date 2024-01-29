@@ -13,11 +13,11 @@ impl SeedMap {
     }
 }
 
-fn seed_map(text: &str) -> (String, SeedMap) {
-    
-    let (name, nums) = text.split_once(":\n").unwrap();
+fn seed_map(text: Vec<&str>) -> (String, SeedMap) {
+    let lines = text.iter();
+    let (name, _) = lines.next().unwrap().split_once(":").unwrap();
     let mut maps: Vec<[u64; 3]> = vec![];
-    for map in nums.lines() {
+    for map in lines {
         let mut map = map.split(' ').filter_map(|s| s.parse::<u64>().ok());
         let map = [
             map.next().unwrap(), 
@@ -31,13 +31,22 @@ fn seed_map(text: &str) -> (String, SeedMap) {
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let lines = input.lines();
-    let seeds: Vec<_> = lines.take_while(|l| !l.trim().is_empty()).collect();
-    let (seeds, almanac) = input.split_once("\n\n").unwrap();
-    let seeds: Vec<u64> = seeds.split(' ')
+    let mut lines = input.lines().peekable();
+    let seeds: Vec<_> = lines.as_ref()
+        .take_while(|l| l.trim().len() > 0).collect();
+    let almanac = {
+        let mut blocks = vec![];
+        while lines.peek().is_some() {
+            let block = lines.as_ref()
+                .take_while(|l| l.trim().len() > 0).collect();
+            blocks.push(block);
+        }
+        blocks
+    };
+    let seeds: Vec<u64> = seeds.iter().map(|s| s.split(' ')).flatten()
         .filter_map(|s| s.parse::<u64>().ok())
         .collect();
-    let seed_maps: HashMap<_, _> = almanac.split("\n\r\n\r")
+    let seed_maps: HashMap<_, _> = almanac.iter()
         .map(seed_map)
         .collect();
     let map_seeds = |s: Vec<u64>, m: &&SeedMap| 
@@ -51,7 +60,7 @@ fn solve(input: &str) -> [String; 2] {
         "temperature-to-humidity map",
         "humidity-to-location map"
     ];
-    let locations = MAP_ORDER.map(|n| &seed_maps[&n.to_owned()])
+    let locations = MAP_ORDER.map(|n| &seed_maps[&(n.to_owned())])
         .iter().fold(seeds, map_seeds);
     [locations.iter().min().unwrap().to_string(), "todo".to_owned()]
 }
