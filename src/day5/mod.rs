@@ -13,8 +13,8 @@ impl SeedMap {
     }
 }
 
-fn seed_map(text: Vec<&str>) -> (String, SeedMap) {
-    let lines = text.iter();
+fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
+    let mut lines = text.iter();
     let (name, _) = lines.next().unwrap().split_once(":").unwrap();
     let mut maps: Vec<[u64; 3]> = vec![];
     for map in lines {
@@ -32,12 +32,12 @@ fn seed_map(text: Vec<&str>) -> (String, SeedMap) {
 
 fn solve(input: &str) -> [String; 2] {
     let mut lines = input.lines().peekable();
-    let seeds: Vec<_> = lines.as_ref()
+    let seeds: Vec<_> = lines
         .take_while(|l| l.trim().len() > 0).collect();
     let almanac = {
         let mut blocks = vec![];
         while lines.peek().is_some() {
-            let block = lines.as_ref()
+            let block = lines
                 .take_while(|l| l.trim().len() > 0).collect();
             blocks.push(block);
         }
