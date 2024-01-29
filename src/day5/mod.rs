@@ -31,6 +31,8 @@ fn seed_map(text: &str) -> (String, SeedMap) {
 }
 
 fn solve(input: &str) -> [String; 2] {
+    let lines = input.lines();
+    let seeds: Vec<_> = lines.take_while(|l| !l.trim().is_empty()).collect();
     let (seeds, almanac) = input.split_once("\n\n").unwrap();
     let seeds: Vec<u64> = seeds.split(' ')
         .filter_map(|s| s.parse::<u64>().ok())
