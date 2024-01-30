@@ -31,7 +31,7 @@ fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let mut lines = input.lines().peekable();
+    let mut lines = input.lines().by_ref().peekable();
     let seeds: Vec<_> = lines
         .take_while(|l| l.trim().len() > 0).collect();
     let almanac = {
