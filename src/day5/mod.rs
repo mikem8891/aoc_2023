@@ -31,13 +31,13 @@ fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let mut lines = input.lines().peekable().by_ref();
-    let seeds: Vec<_> = lines
+    let mut lines = input.lines().peekable();
+    let seeds: Vec<_> = lines.by_ref()
         .take_while(|l| l.trim().len() > 0).collect();
     let almanac = {
         let mut blocks = vec![];
         while lines.peek().is_some() {
-            let block = lines
+            let block = lines.by_ref()
                 .take_while(|l| l.trim().len() > 0).collect();
             blocks.push(block);
         }
