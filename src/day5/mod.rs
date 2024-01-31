@@ -6,9 +6,9 @@ struct SeedMap(Vec<[u64; 3]>);
 
 impl SeedMap {
     fn get(&self, input: u64) -> u64 {
-        self.0.iter().map(|s| (input - s[1], *s))
-            .filter(|(input, r)| 0 <= *input && input < &r[2])
-            .map(|(input, d)| input + d[0])
+        self.0.iter()
+            .filter(|r| r[1] <= input && input < r[1] + r[2])
+            .map(|d| input + d[0] - d[1])
             .next().unwrap_or(input)
     }
 }
