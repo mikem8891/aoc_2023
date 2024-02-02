@@ -1,33 +1,73 @@
 const DAY_NUM: &str = "5";
 
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Range};
 
-struct SeedMap(Vec<[u64; 3]>);
+#[derive(Clone)]
+struct SeedMap(Box<[SeedSubMap]>);
+
+#[derive(Clone)]
+struct SeedSubMap {
+    des: u64,
+    src: u64,
+    rng: u64
+}
 
 impl SeedMap {
     fn get(&self, input: u64) -> u64 {
         self.0.iter()
-            .filter(|r| r[1] <= input && input < r[1] + r[2])
-            .map(|d| input + d[0] - d[1])
+            .filter(|r| input < r.src + r.rng)
+            .take_while(|r| r.src <= input)
+            .map(|d| input + d.des - d.src)
             .next().unwrap_or(input)
+    }
+
+    fn get_range(&self, input: &Range<u64>) -> Vec<Range<u64>> {
+        let new_range = |i: &Range<u64>, ssm: &SeedSubMap| {
+            let start = if i.start < ssm.src {
+                ssm.des
+            } else {
+                i.start + ssm.des - ssm.src
+            };
+            let end = if ssm.src + ssm.rng < i.end {
+                ssm.des + ssm.rng
+            } else {
+                i.end + ssm.des - ssm.src
+            };
+            start..end
+        };
+        self.0.iter()
+            .filter(|r| input.start < r.src + r.rng)
+            .take_while(|r| r.src <= input.end)
+            .map(|ssm| new_range(&input, ssm))
+            .collect()
     }
 }
 
 fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
     let mut lines = text.iter();
     let (name, _) = lines.next().unwrap().split_once(":").unwrap();
-    let mut maps: Vec<[u64; 3]> = vec![];
+    let mut maps: Vec<_> = vec![];
     for map in lines {
         let mut map = map.split(' ').filter_map(|s| s.parse::<u64>().ok());
-        let map = [
-            map.next().unwrap(), 
-            map.next().unwrap(), 
-            map.next().unwrap()
-        ];
+        let map = SeedSubMap {
+            des: map.next().unwrap(),
+            src: map.next().unwrap(),
+            rng: map.next().unwrap()
+        }        ;
         maps.push(map);
     }
-    maps.sort_by_key(|&m| m[1]);
-    (name.to_owned(), SeedMap(maps))
+    maps.sort_by_key(|m| m.src);
+    (name.to_owned(), SeedMap(maps.into_boxed_slice()))
+}
+
+fn seed_to_loc(ordered_seed_map: &[SeedMap], seed: u64) -> u64 {
+    ordered_seed_map.iter()
+        .fold(seed, |s, sm| sm.get(s))
+}
+
+fn seed_to_loc_range(ordered_seed_map: &[SeedMap], seed_range: &Range<u64>) -> Vec<Range<u64>> {
+    ordered_seed_map.iter()
+        .fold(vec![seed_range.clone()], |s, sm| s.iter().map(|s| sm.get_range(s).into_iter()).flatten().collect())
 }
 
 fn solve(input: &str) -> [String; 2] {
@@ -46,6 +86,13 @@ fn solve(input: &str) -> [String; 2] {
     let seeds: Vec<u64> = seeds.iter().map(|s| s.split(' ')).flatten()
         .filter_map(|s| s.parse::<u64>().ok())
         .collect();
+    let mut seed_iter = seeds.iter().peekable();
+    let mut seed_ranges = vec![];
+    while seed_iter.peek().is_some() {
+        let seed_start = seed_iter.next().unwrap();
+        let seed_end = seed_start + seed_iter.next().unwrap();
+        seed_ranges.push(*seed_start..seed_end);
+    }
     let seed_maps: HashMap<_, _> = almanac.iter()
         .map(seed_map)
         .collect();
@@ -62,7 +109,20 @@ fn solve(input: &str) -> [String; 2] {
     ];
     let locations = MAP_ORDER.map(|n| &seed_maps[&(n.to_owned())])
         .iter().fold(seeds, map_seeds);
-    [locations.iter().min().unwrap().to_string(), "todo".to_owned()]
+    let ordered_seed_map: Box<[SeedMap]> = MAP_ORDER.iter()
+        .map(|mt| seed_maps[*mt].clone()).collect();
+    let location_p2 = seed_ranges.iter()
+        .map(|sr| sr.clone().into_iter()).flatten()
+        .map(|s| seed_to_loc(ordered_seed_map.as_ref(), s))
+        .min().unwrap();
+//    let location_p3 = seed_ranges.iter()
+//        .map(|s| seed_to_loc_range(ordered_seed_map.as_ref(), s).into_iter()).flatten()
+//        .map(|r| r.start)
+//        .min().unwrap();
+    [
+        locations.iter().min().unwrap().to_string(), 
+        location_p2.to_string()
+    ]
 }
 
 pub fn main() {
