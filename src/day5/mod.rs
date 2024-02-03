@@ -25,9 +25,9 @@ impl SeedMap {
             .next().unwrap_or(input)
     }
 
-    fn get_range(&self, input: &Range<u64>) -> Vec<Range<u64>> {
-        let new_range = |i: &Range<u64>, ssm: &SeedSubMap| {
-            let src = max(i.start, ssm.src)..min(i.end, ssm.src + ssm.rng);
+    fn get_range<'a>(&'a self, input: Range<u64>) -> impl Iterator<Item = Range<u64>> + 'a {
+        let new_range = move |ssm: &SeedSubMap| {
+            let src = max(input.start, ssm.src)..min(input.end, ssm.src + ssm.rng);
             if src.is_empty() {
                 None
             } else {
@@ -35,8 +35,8 @@ impl SeedMap {
             }
         };
         self.0.iter()
-            .take_while(|r| r.src <= input.end)
-            .filter_map(|r| new_range(input, ssm))
+            .take_while(move |r| r.src <= input.end)
+            .filter_map(new_range)
     }
 }
 
