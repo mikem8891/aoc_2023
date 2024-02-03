@@ -1,6 +1,10 @@
 const DAY_NUM: &str = "5";
 
-use std::{collections::HashMap, ops::Range};
+use std::{
+    collections::HashMap, 
+    ops::Range,
+    cmp::{min, max}
+};
 
 #[derive(Clone)]
 struct SeedMap(Box<[SeedSubMap]>);
@@ -23,23 +27,16 @@ impl SeedMap {
 
     fn get_range(&self, input: &Range<u64>) -> Vec<Range<u64>> {
         let new_range = |i: &Range<u64>, ssm: &SeedSubMap| {
-            let start = if i.start < ssm.src {
-                ssm.des
+            let src = max(i.start, ssm.src)..min(i.end, ssm.src + ssm.rng);
+            if src.is_empty() {
+                None
             } else {
-                i.start + ssm.des - ssm.src
-            };
-            let end = if ssm.src + ssm.rng < i.end {
-                ssm.des + ssm.rng
-            } else {
-                i.end + ssm.des - ssm.src
-            };
-            start..end
+                Some((src.start + ssm.des - ssm.src)..(src.end + ssm.des - ssm.src))
+            }
         };
         self.0.iter()
-            .filter(|r| input.start < r.src + r.rng)
             .take_while(|r| r.src <= input.end)
-            .map(|ssm| new_range(&input, ssm))
-            .collect()
+            .filter_map(|r| new_range(input, ssm))
     }
 }
 
@@ -67,7 +64,7 @@ fn seed_to_loc(ordered_seed_map: &[SeedMap], seed: u64) -> u64 {
 
 fn seed_to_loc_range(ordered_seed_map: &[SeedMap], seed_range: &Range<u64>) -> Vec<Range<u64>> {
     ordered_seed_map.iter()
-        .fold(vec![seed_range.clone()], |s, sm| s.iter().map(|s| sm.get_range(s).into_iter()).flatten().collect())
+        .fold(vec![seed_range.clone()], |s, sm| s.iter().map(|s| sm.get_range(s)).flatten().collect())
 }
 
 fn solve(input: &str) -> [String; 2] {
