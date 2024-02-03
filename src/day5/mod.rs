@@ -62,9 +62,9 @@ fn seed_to_loc(ordered_seed_map: &[SeedMap], seed: u64) -> u64 {
         .fold(seed, |s, sm| sm.get(s))
 }
 
-fn seed_to_loc_range(ordered_seed_map: &[SeedMap], seed_range: &Range<u64>) -> Vec<Range<u64>> {
-    ordered_seed_map.iter()
-        .fold(vec![seed_range.clone()], |s, sm| s.iter().map(|s| sm.get_range(s)).flatten().collect())
+fn seed_to_loc_range(ordered_seed_map: &[SeedMap], seed_range: Range<u64>) -> Vec<Range<u64>> {
+    ordered_seed_map.into_iter()
+        .fold(vec![seed_range], |s, sm| s.into_iter().map(|s| sm.get_range(s)).flatten().collect())
 }
 
 fn solve(input: &str) -> [String; 2] {
@@ -112,8 +112,8 @@ fn solve(input: &str) -> [String; 2] {
         .map(|sr| sr.clone().into_iter()).flatten()
         .map(|s| seed_to_loc(ordered_seed_map.as_ref(), s))
         .min().unwrap();
-//    let location_p3 = seed_ranges.iter()
-//        .map(|s| seed_to_loc_range(ordered_seed_map.as_ref(), s).into_iter()).flatten()
+//    let location_p3 = seed_ranges.into_iter()
+//        .map(|sr| seed_to_loc_range(ordered_seed_map.as_ref(), sr).into_iter()).flatten()
 //        .map(|r| r.start)
 //        .min().unwrap();
     [
