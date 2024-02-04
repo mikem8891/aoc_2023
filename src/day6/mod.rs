@@ -13,9 +13,9 @@ fn solve(input: &str) -> [String; 2] {
     let dists_iter = dist_str.split(' ')
         .filter_map(|s| s.parse::<u32>().ok());
     let races: Vec<(u32, u32)> = times_iter.zip(dists_iter).collect();
-    let time_p2 = time_str.chars().filter(is_digit).collect::<String>()
+    let time_p2 = time_str.chars().filter(char::is_ascii_digit).collect::<String>()
         .parse::<u32>().unwrap();
-    let dist_p2 = time_str.chars().filter(is_digit).collect::<String>()
+    let dist_p2 = time_str.chars().filter(char::is_ascii_digit).collect::<String>()
         .parse::<u32>().unwrap();
     // d = ht * (t - ht)
     // ht = (t / 2) ± √((t / 2)² - d)
