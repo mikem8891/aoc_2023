@@ -34,6 +34,6 @@ fn main() {
     let (part_1, part_2) = day4::solve(&contents);
     println!("part 1: sum is {}", part_1);
     println!("part 2: sum is {}", part_2);
-    day5::main();
+//    day5::main();
     day6::main();
 }
