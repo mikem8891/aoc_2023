@@ -1,7 +1,13 @@
 const DAY_NUM: &str = "6";
 
 fn solve(input: &str) -> [String; 2] {
-
+    let lines: Vec<&str> = input.lines().collect();
+    let times: Vec<u32> = lines[0].split_once(':').unwrap().1
+        .split(' ').filter_map(|s| s.parse::<u32>().ok())
+        .collect();
+    let dists: Vec<u32> = lines[1].split_once(':').unwrap().1
+        .split(' ').filter_map(|s| s.parse::<u32>().ok())
+        .collect();
     
     [
         "todo".to_owned(), 
