@@ -34,7 +34,10 @@ fn solve(input: &str) -> [String; 2] {
         .map(|(s, e)| e - s + 1)
         .product();
     let (start_p2, end_p2) = hold_time_rng(&(time_p2, dist_p2));
-    let ways_to_win_p2 = end_p2 - start_p2 + 1;
+//    let ways_to_win_p2 = end_p2 - start_p2 + 1;
+    let ways_to_win_p2 = (0..time_p2).into_iter()
+        .filter(|ht| ht * (time_p2 - ht) > dist_p2)
+        .map(|_| 1_u32).sum();
     [
         ways_to_win.to_string(), 
         ways_to_win_p2.to_string()
