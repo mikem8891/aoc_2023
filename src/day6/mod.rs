@@ -1,5 +1,3 @@
-use crate::util::is_digit;
-
 const DAY_NUM: &str = "6";
 
 fn solve(input: &str) -> [String; 2] {
