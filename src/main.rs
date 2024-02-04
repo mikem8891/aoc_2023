@@ -7,6 +7,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 
 fn main() {
     println!("Day 1");
@@ -36,4 +37,5 @@ fn main() {
     println!("part 2: sum is {}", part_2);
 //    day5::main();
     day6::main();
+    day7::main();
 }
