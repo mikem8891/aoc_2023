@@ -1,14 +1,22 @@
+use crate::util::is_digit;
+
 const DAY_NUM: &str = "6";
 
 fn solve(input: &str) -> [String; 2] {
     let mut lines = input.lines();
-    let times_iter = lines.next().unwrap()
-        .split_once(':').unwrap().1
-        .split(' ').filter_map(|s| s.parse::<u32>().ok());
-    let dists_iter = lines.next().unwrap()
-        .split_once(':').unwrap().1
-        .split(' ').filter_map(|s| s.parse::<u32>().ok());
+    let time_str = lines.next().unwrap()
+        .split_once(':').unwrap().1;
+    let times_iter = time_str.split(' ')
+        .filter_map(|s| s.parse::<u32>().ok());
+    let dist_str = lines.next().unwrap()
+        .split_once(':').unwrap().1;
+    let dists_iter = dist_str.split(' ')
+        .filter_map(|s| s.parse::<u32>().ok());
     let races: Vec<(u32, u32)> = times_iter.zip(dists_iter).collect();
+    let time_p2 = time_str.chars().filter(is_digit).collect::<String>()
+        .parse::<u32>().unwrap();
+    let dist_p2 = time_str.chars().filter(is_digit).collect::<String>()
+        .parse::<u32>().unwrap();
     // d = ht * (t - ht)
     // ht = (t / 2) ± √((t / 2)² - d)
     let hold_time_rng = |&(t, d)| {
@@ -27,9 +35,11 @@ fn solve(input: &str) -> [String; 2] {
     let ways_to_win: u32 = races.iter().map(hold_time_rng)
         .map(|(s, e)| e - s + 1)
         .product();
+    let (start_p2, end_p2) = hold_time_rng(&(time_p2, dist_p2));
+    let ways_to_win_p2 = end_p2 - start_p2 + 1;
     [
         ways_to_win.to_string(), 
-        "todo".to_owned()
+        ways_to_win_p2.to_string()
     ]
 }
 
