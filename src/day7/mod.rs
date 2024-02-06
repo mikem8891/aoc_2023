@@ -38,14 +38,14 @@ struct Hand {
 
 impl HandType {
     fn new(cards: &[Cards; 5]) -> HandType {
-        let mut count = BTreeMap::<_,u8>::new();
+        let mut count = BTreeMap::<_, u8>::new();
         for card in cards.iter() {
             count.entry(card)
                 .and_modify(|c| *c += 1)
                 .or_insert(1);
         }
         let mut count: Vec<_> = count.into_iter()
-            .map(|_, v| v)
+            .map(|_card, count| count)
             .collect();
         count.sort();
         use HandType::*;
