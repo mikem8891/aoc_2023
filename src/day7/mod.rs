@@ -104,7 +104,7 @@ fn solve(input: &str) -> [String; 2] {
     }
     hands.sort_by(|(h, _b)| h);
     let winnings = hands.zip(1..)
-        .map(|(r, (_h, b))| r * b)
+        .map(|((_h, b), r)| r * b)
         .sum();
     [
         winnings.to_string(), 
