@@ -95,10 +95,19 @@ impl Hand {
 }
 
 fn solve(input: &str) -> [String; 2] {
-    
-    
+    let hands: Vec<(Hands, u32)> = vec![];
+    for line in input.lines() {
+        let (hand, bid) = line.split_once(' ').unwrap();
+        let hand = Hand::new(hand);
+        let bid = bid.parse().unwrap();
+        hands.push((hand, bid));
+    }
+    hands.sort_by(|(h, _b)| h);
+    let winnings = hands.zip((1..).into_iter())
+        .map(|(r, (_h, b))| r * b)
+        .sum();
     [
-        "todo".to_string(), 
+        winnings.to_string(), 
         "todo".to_string()
     ]
 }
