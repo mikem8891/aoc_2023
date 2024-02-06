@@ -102,7 +102,7 @@ fn solve(input: &str) -> [String; 2] {
         let bid = bid.parse().unwrap();
         hands.push((hand, bid));
     }
-    hands.sort_by_key(|(h, _b)| h.clone());
+    hands.sort_by(|(h1, _), (h2, _)| h1.cmp(h2));
     let winnings: u32 = hands.iter().zip(1..)
         .map(|((_h, b), r)| r * b)
         .sum();
