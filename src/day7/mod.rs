@@ -103,7 +103,7 @@ fn solve(input: &str) -> [String; 2] {
         hands.push((hand, bid));
     }
     hands.sort_by(|(h, _b)| h);
-    let winnings = hands.zip((1..).into_iter())
+    let winnings = hands.zip(1..)
         .map(|(r, (_h, b))| r * b)
         .sum();
     [
