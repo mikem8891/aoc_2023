@@ -2,7 +2,7 @@ const DAY_NUM: &str = "7";
 
 use std::collections::BTreeMap;
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 enum HandType {
     HighCard,
     OnePair,
@@ -13,7 +13,7 @@ enum HandType {
     FiveKind
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Card {
     Two = 2,
     Three = 3,
@@ -30,14 +30,14 @@ enum Card {
     Ace = 14
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 struct Hand {
     hand_type: HandType,
     cards: [Card; 5]
 }
 
 impl HandType {
-    fn new(cards: &[Cards; 5]) -> HandType {
+    fn new(cards: &[Card; 5]) -> HandType {
         let mut count = BTreeMap::<_, u8>::new();
         for card in cards.iter() {
             count.entry(card)
@@ -45,7 +45,7 @@ impl HandType {
                 .or_insert(1);
         }
         let mut count: Vec<_> = count.into_iter()
-            .map(|_card, count| count)
+            .map(|(_card, count)| count)
             .collect();
         count.sort();
         use HandType::*;
@@ -55,7 +55,7 @@ impl HandType {
             [2, 3] => FullHouse,
             [.., 3] => ThreeKind,
             [.., 2, 2] => TwoPair,
-            [.., 2] => OneKind,
+            [.., 2] => OnePair,
             [..] => HighCard
         }
     }
@@ -95,15 +95,15 @@ impl Hand {
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let hands: Vec<(Hands, u32)> = vec![];
+    let mut hands: Vec<(Hand, u32)> = vec![];
     for line in input.lines() {
         let (hand, bid) = line.split_once(' ').unwrap();
         let hand = Hand::new(hand);
         let bid = bid.parse().unwrap();
         hands.push((hand, bid));
     }
-    hands.sort_by(|(h, _b)| h);
-    let winnings = hands.zip(1..)
+    hands.sort_by_key(|(h, _b)| h.clone());
+    let winnings: u32 = hands.iter().zip(1..)
         .map(|((_h, b), r)| r * b)
         .sum();
     [
