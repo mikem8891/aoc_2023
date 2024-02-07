@@ -1,5 +1,16 @@
 const DAY_NUM: &str = "8";
 
+struct Node {
+    left:  *const Node,
+    right: *const Node
+}
+
+impl Node {
+    fn traverse(directions: &str) {
+        
+    }
+}
+
 fn solve(input: &str) -> [String; 2] {
 
 
