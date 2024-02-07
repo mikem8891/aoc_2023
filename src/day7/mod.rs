@@ -2,7 +2,7 @@ const DAY_NUM: &str = "7";
 
 use std::collections::BTreeMap;
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 enum HandType {
     HighCard,
     OnePair,
@@ -15,6 +15,7 @@ enum HandType {
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Card {
+    Joker = 1,
     Two = 2,
     Three = 3,
     Four = 4,
@@ -30,7 +31,7 @@ enum Card {
     Ace = 14
 }
 
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
 struct Hand {
     hand_type: HandType,
     cards: [Card; 5]
@@ -44,10 +45,11 @@ impl HandType {
                 .and_modify(|c| *c += 1)
                 .or_insert(1);
         }
-        let mut count: Vec<_> = count.into_iter()
-            .map(|(_card, count)| count)
+        let joker_count = count.remove(Card::Joker).unwrap_or(0);
+        let mut count: Vec<_> = count.into_values()
             .collect();
         count.sort();
+        count[&count.len() - 1] += joker_count;
         use HandType::*;
         match count[..] {
             [5] => FiveKind,
@@ -81,6 +83,13 @@ impl Card {
             c => panic!("'{c}' is an invalid char for a Card")
         }
     }
+    
+    fn new_p2(c: char) -> Card {
+        match c {
+            'J' => Card::Joker,
+            c => Card::new(c)
+        }
+    }
 }
 
 impl Hand {
@@ -92,23 +101,40 @@ impl Hand {
         let hand_type = HandType::new(&cards);
         Hand {hand_type, cards}
     }
+    
+    fn new_p2(text: &str) -> Hand {
+        let mut cards = [Card::Ace; 5];
+        for (pos, card) in text.chars().enumerate() {
+            cards[pos] = Card::new_p2(card);
+        }
+        let hand_type = HandType::new(&cards);
+        Hand {hand_type, cards}
+    }
 }
 
 fn solve(input: &str) -> [String; 2] {
     let mut hands: Vec<(Hand, u32)> = vec![];
+    let mut hands_p2: Vec<(Hand, u32)> = vec![];
     for line in input.lines() {
         let (hand, bid) = line.split_once(' ').unwrap();
+        let hand_p2 = Hand::new_p2(hand)
         let hand = Hand::new(hand);
         let bid = bid.parse().unwrap();
         hands.push((hand, bid));
+        hands_p2.push((hand_p2, bid));
     }
-    hands.sort_by(|(h1, _), (h2, _)| h1.cmp(h2));
+    let cmp_hands = |(h1, _), (h2, _)| h1.cmp(h2);
+    hands.sort_by(cmp_hands);
+    hand_p2.sort_by(cmp_hands);
     let winnings: u32 = hands.iter().zip(1..)
+        .map(|((_h, b), r)| r * b)
+        .sum();
+    let winnings_p2: u32 = hands_p2.iter().zip(1..)
         .map(|((_h, b), r)| r * b)
         .sum();
     [
         winnings.to_string(), 
-        "todo".to_string()
+        winnings_p2.to_string()
     ]
 }
 
