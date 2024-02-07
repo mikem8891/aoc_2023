@@ -45,11 +45,14 @@ impl HandType {
                 .and_modify(|c| *c += 1)
                 .or_insert(1);
         }
-        let joker_count = count.remove(Card::Joker).unwrap_or(0);
+        let joker_count = count.remove(&Card::Joker).unwrap_or(0);
         let mut count: Vec<_> = count.into_values()
             .collect();
         count.sort();
-        count[&count.len() - 1] += joker_count;
+        match count.last_mut() {
+            Some(c) => *c += joker_count,
+            None => count.push(joker_count)
+        };
         use HandType::*;
         match count[..] {
             [5] => FiveKind,
@@ -117,15 +120,15 @@ fn solve(input: &str) -> [String; 2] {
     let mut hands_p2: Vec<(Hand, u32)> = vec![];
     for line in input.lines() {
         let (hand, bid) = line.split_once(' ').unwrap();
-        let hand_p2 = Hand::new_p2(hand)
+        let hand_p2 = Hand::new_p2(hand);
         let hand = Hand::new(hand);
         let bid = bid.parse().unwrap();
         hands.push((hand, bid));
         hands_p2.push((hand_p2, bid));
     }
-    let cmp_hands = |(h1, _), (h2, _)| h1.cmp(h2);
+    let cmp_hands = |(h1, _): &(Hand, u32), (h2, _): &(Hand, u32)| h1.cmp(h2);
     hands.sort_by(cmp_hands);
-    hand_p2.sort_by(cmp_hands);
+    hands_p2.sort_by(cmp_hands);
     let winnings: u32 = hands.iter().zip(1..)
         .map(|((_h, b), r)| r * b)
         .sum();
