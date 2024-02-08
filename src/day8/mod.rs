@@ -84,7 +84,7 @@ mod net{
                 use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node]>(net)
             };
-            let start = &net[start.unwrap()]
+            let start = &net[start.unwrap()];
             (Net(net), start)
         }
     }
