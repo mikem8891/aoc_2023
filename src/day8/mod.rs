@@ -70,21 +70,22 @@ mod net{
                 net.push(PtrNode::new(node));
                 direct_idx.push((left, right));
             }
-            let mut start = ptr::null();
+            let mut start = None;
             for i in 0..net.len() {
                 let (left, right) = direct_idx[i];
                 net[i].left  = &net[node_map[left]];
                 net[i].right = &net[node_map[right]];
                 if net[i].node_type == NodeType::Start {
-                    start = &net[i];
+                    start = Some(i);
                 }
             }
             let net = net.into_boxed_slice();
             let net = unsafe {
                 use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node]>(net)
-            }
-            (Net(net), &*start)
+            };
+            let start = &net[start.unwrap()]
+            (Net(net), start)
         }
     }
     
