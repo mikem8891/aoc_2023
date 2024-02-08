@@ -82,7 +82,7 @@ mod net{
             let net = net.into_boxed_slice();
             let net = unsafe {
                 use std::mem::transmute;
-                transmute::<Box<[PtrNode]>, Box<[Node]>(net)
+                transmute::<Box<[PtrNode]>, Box<[Node]>>(net)
             };
             let start = &net[start.unwrap()];
             (Net(net), start)
