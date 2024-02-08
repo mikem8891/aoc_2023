@@ -1,12 +1,24 @@
 const DAY_NUM: &str = "8";
 
 mod net{
+    
+    #[repr(u8)]
+    enum NodeType {
+        Start,
+        Middle,
+        End
+    }
+    
+    #[repr(C)]
     struct PtrNode {
+        node_type: NodeType,
         left:  *const Node,
         right: *const Node
     }
     
+    #[repr(C)]
     pub struct Node<'a> {
+        node_type: NodeType,
         pub left:  &<'a> Node<'a>,
         pub right: &<'a> Node<'a>
     }
@@ -14,9 +26,16 @@ mod net{
     pub struct Net<'a>(Box<[Node]>)
     
     impl PtrNode {
-        fn new(){
+        fn new(name: &str){
+            use NodeType::*;
+            let node_type = match {
+                "AAA" => Start,
+                "ZZZ" => End,
+                _ => Middle
+            }
             use std::ptr;
             PtrNode{
+                node_type,
                 left:  ptr::null(),
                 right: ptr::null()
             }
@@ -38,7 +57,7 @@ mod net{
     }
     
     impl<'a> Net<'a> {
-        pub fn new<'a>(map: &str) -> Net<'a> {
+        pub fn new<'a>(map: &str) -> (Net<'a>, &'a Node<'a>) {
             use std::collections::HashMap;
             let mut node_map = HashMap::new();
             let mut net = vec![];
@@ -51,17 +70,21 @@ mod net{
                 net.push(PtrNode::new(node));
                 direct_idx.push((left, right));
             }
+            let mut start = ptr::null();
             for i in 0..net.len() {
                 let (left, right) = direct_idx[i];
                 net[i].left  = &net[node_map[left]];
                 net[i].right = &net[node_map[right]];
+                if net[i].node_type == NodeType::Start {
+                    start = &net[i];
+                }
             }
             let net = net.into_boxed_slice();
             let net = unsafe {
                 use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node]>(net)
             }
-            Net(net)
+            (Net(net), &*start)
         }
     }
     
