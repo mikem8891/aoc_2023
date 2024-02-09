@@ -1,27 +1,30 @@
 const DAY_NUM: &str = "9";
 
-fn next_num(nums: &[i64]) -> i64 {
-    let all_zeros = nums.iter().map(|n| *n == 0).reduce(|a, e| a && e).unwrap();
+fn extrap_num(nums: &[i64]) -> (i64, i64) {
+    let all_zeros = nums.iter()
+        .map(|n| *n == 0).reduce(|a, e| a && e).unwrap();
     if all_zeros {
-        return 0
+        return (0, 0)
     }
     let len = nums.len();
     let x1 = &nums[0..len-1];
     let x2 = &nums[1..len  ];
     let diff: Vec<_> = x1.iter().zip(x2).map(|(x1, x2)| x2 - x1).collect::<Vec<_>>();
-    let next_diff = next_num(&*diff);
+    let (prev_diff, next_diff) = extrap_num(&*diff);
     let next_num = nums[len-1] + next_diff;
-    next_num
+    let prev_num = num[0]      - prev_diff;
+    (prev_diff, next_num)
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let sum = input.lines()
-        .map(|l| next_num(&*l.split(' ').map(|n| n.parse::<i64>().unwrap()).collect::<Vec<_>>()))
-        .sum::<i64>();
-    
+    let num_lists = inputs.lines()
+        .map(|l| l.split(' ').map(|n| n.parse::<i64>().unwrap()).collect::<Vec<_>>());
+    let sums = num_lists
+        .map(|l| next_num(&*l))
+        .reduce(|((sp, sn), (p, n))| => ((sp + p), (sn + n)));
     [
-        sum.to_string(),
-        "todo".to_string()
+        sums.1.to_string(),
+        sums.0.to_string()
     ]
 }
 
