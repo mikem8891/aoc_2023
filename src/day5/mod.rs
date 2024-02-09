@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 const DAY_NUM: &str = "5";
 
 use std::{
@@ -10,6 +11,7 @@ use std::{
 struct SeedMap(Box<[SeedSubMap]>);
 
 #[derive(Clone)]
+#[allow(dead_code)]
 struct SeedSubMap {
     des: u64,
     src: u64,
@@ -17,7 +19,8 @@ struct SeedSubMap {
 }
 
 impl SeedMap {
-    fn get(&self, input: u64) -> u64 {
+    #[allow(dead_code)]
+fn get(&self, input: u64) -> u64 {
         self.0.iter()
             .filter(|r| input < r.src + r.rng)
             .take_while(|r| r.src <= input)
@@ -25,7 +28,8 @@ impl SeedMap {
             .next().unwrap_or(input)
     }
 
-    fn get_range<'a>(&'a self, input: Range<u64>) -> impl Iterator<Item = Range<u64>> + 'a {
+    #[allow(dead_code)]
+fn get_range<'a>(&'a self, input: Range<u64>) -> impl Iterator<Item = Range<u64>> + 'a {
         let new_range = move |ssm: &SeedSubMap| {
             let src = max(input.start, ssm.src)..min(input.end, ssm.src + ssm.rng);
             if src.is_empty() {
@@ -40,6 +44,7 @@ impl SeedMap {
     }
 }
 
+#[allow(dead_code)]
 fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
     let mut lines = text.iter();
     let (name, _) = lines.next().unwrap().split_once(":").unwrap();
@@ -57,16 +62,19 @@ fn seed_map(text: &Vec<&str>) -> (String, SeedMap) {
     (name.to_owned(), SeedMap(maps.into_boxed_slice()))
 }
 
+#[allow(dead_code)]
 fn seed_to_loc(ordered_seed_map: &[SeedMap], seed: u64) -> u64 {
     ordered_seed_map.iter()
         .fold(seed, |s, sm| sm.get(s))
 }
 
+#[allow(dead_code)]
 fn seed_to_loc_range(ordered_seed_map: &[SeedMap], seed_range: Range<u64>) -> Vec<Range<u64>> {
     ordered_seed_map.into_iter()
         .fold(vec![seed_range], |s, sm| s.into_iter().map(|s| sm.get_range(s)).flatten().collect())
 }
 
+#[allow(dead_code)]
 fn solve(input: &str) -> [String; 2] {
     let mut lines = input.lines().peekable();
     let seeds: Vec<_> = lines.by_ref()
@@ -122,6 +130,7 @@ fn solve(input: &str) -> [String; 2] {
     ]
 }
 
+#[allow(dead_code)]
 pub fn main() {
     println!("Day 5");
     let path = format!("./src/day{DAY_NUM}/input.txt");
