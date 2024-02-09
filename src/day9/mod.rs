@@ -7,7 +7,7 @@ fn next_num(nums: &[u64]) -> u64 {
 fn solve(input: &str) -> [String; 2] {
     let 
     let sum = input.lines()
-        .map(|l| next_num(l.split(' ').filter_map(|n| n.parse::<u64>().ok()).collect::<Vec<_>>()))
+        .map(|l| next_num(l.split(' ').map(|n| n.parse::<u64>().unwrap()).collect::<Vec<_>>()))
         .sum().unwrap()
     
     [
