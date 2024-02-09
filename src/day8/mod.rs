@@ -23,16 +23,24 @@ mod net{
         pub right: &<'a> Node<'a>
     }
     
-    pub struct Net<'a>(Box<[Node]>)
+    pub struct Net<'a>{
+        nodes: Box<[Node<'a>]>,
+        start: &'a Node
+    }
+    
+    impl NodeType {
+        fn new(name: &str) {
+            match name {
+                "AAA" => NodeType::Start,
+                "ZZZ" => NodeType::End,
+                _     => NodeType::Middle
+            }
+        }
+    }
     
     impl PtrNode {
         fn new(name: &str){
-            use NodeType::*;
-            let node_type = match {
-                "AAA" => Start,
-                "ZZZ" => End,
-                _ => Middle
-            }
+            let node_type = NodeType::new(name);
             use std::ptr;
             PtrNode{
                 node_type,
@@ -57,7 +65,7 @@ mod net{
     }
     
     impl<'a> Net<'a> {
-        pub fn new<'a>(map: &str) -> (Net<'a>, &'a Node<'a>) {
+        pub fn new<'a>(map: &str) -> Net<'a> {
             use std::collections::HashMap;
             let mut node_map = HashMap::new();
             let mut net = vec![];
@@ -70,29 +78,32 @@ mod net{
                 net.push(PtrNode::new(node));
                 direct_idx.push((left, right));
             }
-            let mut start = None;
+            let (mut start, mut end) = (None, None);
             for i in 0..net.len() {
                 let (left, right) = direct_idx[i];
                 net[i].left  = &net[node_map[left]];
                 net[i].right = &net[node_map[right]];
-                if net[i].node_type == NodeType::Start {
-                    start = Some(i);
+                match net[i].node_type {
+                    NodeType::Start => start = Some(i);,
+                    NodeType::End   => end   = Some(i);,
+                    NodeType::Middle => ()
                 }
             }
             let net = net.into_boxed_slice();
-            let net = unsafe {
+            let nodes = unsafe {
                 use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node]>>(net)
             };
-            let start = &net[start.unwrap()];
-            (Net(net), start)
+            let start = &net[start.expect("No start node found")];
+            end.expect("No end node found");
+            Net{nodes, start}
         }
     }
     
     impl<'a> Deref for Net<'a> {
         type Target = [Node];
         fn deref(&self) -> &Self::Target {
-            &self.0
+            &*self.nodes
         }
     }
 }
