@@ -1,9 +1,17 @@
 const DAY_NUM: &str = "9";
 
+fn next_num(nums: &[u64]) -> u64 {
+    
+}
+
 fn solve(input: &str) -> [String; 2] {
+    let 
+    let sum = input.lines()
+        .map(|l| next_num(l.split(' ').filter_map(|n| n.parse::<u64>().ok()).collect::<Vec<_>>()))
+        .sum().unwrap()
     
     [
-        "todo".to_string(),
+        sum.to_string(),
         "todo".to_string()
     ]
 }
