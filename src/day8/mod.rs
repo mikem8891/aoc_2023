@@ -25,7 +25,7 @@ mod net{
     
     pub struct Net<'a>{
         nodes: Box<[Node<'a>]>,
-        start: &'a Node
+        start: &'a Node<'a>
     }
     
     impl NodeType {
@@ -97,6 +97,9 @@ mod net{
             let start = &net[start.expect("No start node found")];
             end.expect("No end node found");
             Net{nodes, start}
+        }
+        fn start(&self) -> &'a Node<'a> {
+            &*self.start
         }
     }
     
