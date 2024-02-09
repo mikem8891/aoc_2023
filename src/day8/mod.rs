@@ -109,10 +109,18 @@ mod net{
 }
 
 fn solve(input: &str) -> [String; 2] {
-
-
+    let lines = input.lines();
+    let directions = lines.next().unwrap();
+    while lines.next().unwrap().trim().is_empty(){}
+    let network = net::Net::new(lines.collect::<&str>());
+    let mut pos = network.start();
+    let mut count = 0;
+    while pos.node_type != NodeType::End {
+        pos = pos.traverse(directions);
+        count += directions.len();
+    }
     [
-        "todo".to_string(),
+        count.to_string(),
         "todo".to_string()
     ]
 }
