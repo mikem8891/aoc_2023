@@ -28,15 +28,17 @@ mod net{
     #[allow(dead_code)]
     pub struct Net<'a>{
         nodes: Box<[Node<'a>]>,
-        start: Box<[usize]>
+        start: usize,
+        all_starts: Box<[usize]>
     }
     
     impl NodeType {
         fn new(name: &str) -> Self {
+            let label = name[0..2].as_bytes().try_into().unwrap();
             match name[2..3] {
-                "A" => NodeType::Start,
+                "A" => NodeType::Start(label),
                 "Z" => NodeType::End,
-                _   => NodeType::Middle
+                _   => NodeType::Middle(label)
             }
         }
     }
@@ -82,30 +84,35 @@ mod net{
                 nodes.push(PtrNode::new(node));
                 direct_idx.push((left, right));
             }
-            let (mut start, mut end) = (None, None);
+            let mut start = None;
+            let mut all_starts = vec![];
             for i in 0..nodes.len() {
                 let (left, right) = direct_idx[i];
                 nodes[i].left  = &nodes[node_map[&left]];
                 nodes[i].right = &nodes[node_map[&right]];
                 match nodes[i].node_type {
-                    NodeType::Start => start = Some(i),
-                    NodeType::End   => end   = Some(i),
-                    NodeType::Middle => ()
+                    NodeType::Start(b"AA") => start = Some(i),
+                    NodeType::Start(_) => all_starts.push(i),
+                    _ => ()
                 }
             }
+            all_starts.push(start.expect("No start node found"));
+            let all_starts = other_starts.into_boxed_slice();
             let nodes = nodes.into_boxed_slice();
-           
-            use std::mem::transmute;
             let nodes =  unsafe {
+                use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node<'a>]>>(nodes)
             };
-            let start = start.expect("No start node found");
-            let end = end.expect("No end node found");
-            Net{nodes, start, end}
+            let start = start.unwrap();
+            Net{nodes, start, all_starts}
         }
 
         pub fn start(&self) -> &Node {
             &self[self.start]
+        }
+        
+        pub fn all_starts(&self) -> Vec<&Node> {
+            self.all_starts.iter().map(|i| &self[i]).collect()
         }
     }
     
@@ -117,6 +124,16 @@ mod net{
     }
 }
 
+fn all_at_ends(nodes: &[&Node]) -> bool {
+    let at_end = |n| {
+        match n.node_type {
+            net::NodeType::End(_) => true,
+            _ => false
+        }
+    }
+    nodes.iter().map(at_end).reduce(|a, n| a && n);
+}
+
 fn solve(input: &str) -> [String; 2] {
     let mut lines = input.lines();
     let directions = lines.next().unwrap();
@@ -124,13 +141,21 @@ fn solve(input: &str) -> [String; 2] {
     let network = net::Net::new(lines);
     let mut pos = network.start();
     let mut count = 0;
-    while pos.node_type != net::NodeType::End {
+    while pos.node_type != net::NodeType::End(b"ZZ") {
         pos = pos.traverse(directions);
         count += directions.len();
     }
+    let mut pos_p2 = &*network.all_starts();
+    let mut count_p2 = 0;
+    while !all_at_ends(pos_p2) {
+        for &mut pos in pos_ps {
+            pos = pos.traverse(directions);
+        }
+        count_p2 += directions.len();
+    }
     [
         count.to_string(),
-        "todo".to_string()
+        count_p2.to_string()
     ]
 }
 
