@@ -124,14 +124,17 @@ mod net{
     }
 }
 
+fn at_end(node: &net::Node) -> bool {
+    match node.node_type {
+        net::NodeType::End(_) => true,
+        _ => false
+    }
+}
+
 fn all_at_ends(nodes: &[&net::Node]) -> bool {
-    let at_end = |n: &&net::Node| {
-        match (*n).node_type {
-            net::NodeType::End(_) => true,
-            _ => false
-        }
-    };
-    nodes.into_iter().map(at_end).reduce(|a, n| a && n).unwrap()
+    nodes.into_iter()
+        .map(|n| at_end(*n))
+        .reduce(|a, n| a && n).unwrap()
 }
 
 fn solve(input: &str) -> [String; 2] {
@@ -141,7 +144,7 @@ fn solve(input: &str) -> [String; 2] {
     let network = net::Net::new(lines);
     let mut pos = network.start();
     let mut count = 0;
-    while pos.node_type != net::NodeType::End(*b"ZZ") {
+    while !at_end(pos) {
         pos = pos.traverse(directions);
         count += directions.len();
     }
