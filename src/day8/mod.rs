@@ -163,7 +163,7 @@ fn solve(input: &str) -> [String; 2] {
                 };
             }
             count_p2 += 1;
-            if all_at_ends(pos_p2) {
+            if all_at_ends(&*pos_p2) {
                 break 'top;
             }
         }
