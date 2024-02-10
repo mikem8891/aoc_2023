@@ -6,9 +6,9 @@ mod net{
     #[derive(PartialEq)]
     #[repr(u8)]
     pub enum NodeType {
-        Start,
+        Start([u8; 2]),
         Middle,
-        End
+        End([u8; 2])
     }
     
     #[repr(C)]
@@ -28,16 +28,15 @@ mod net{
     #[allow(dead_code)]
     pub struct Net<'a>{
         nodes: Box<[Node<'a>]>,
-        start: usize,
-        end:   usize
+        start: Box<[usize]>
     }
     
     impl NodeType {
         fn new(name: &str) -> Self {
-            match name {
-                "AAA" => NodeType::Start,
-                "ZZZ" => NodeType::End,
-                _     => NodeType::Middle
+            match name[2..3] {
+                "A" => NodeType::Start,
+                "Z" => NodeType::End,
+                _   => NodeType::Middle
             }
         }
     }
