@@ -28,7 +28,7 @@ mod net{
     #[allow(dead_code)]
     pub struct Net<'a>{
         nodes: Box<[Node<'a>]>,
-        start: usize,
+        start: Option<usize>,
         all_starts: Box<[usize]>
     }
     
@@ -96,19 +96,21 @@ mod net{
                     _ => ()
                 }
             }
-            all_starts.push(start.expect("No start node found"));
+            if let Some(start) = start {
+               all_starts.push(start);
+            }
             let all_starts = all_starts.into_boxed_slice();
             let nodes = nodes.into_boxed_slice();
             let nodes =  unsafe {
                 use std::mem::transmute;
                 transmute::<Box<[PtrNode]>, Box<[Node<'a>]>>(nodes)
             };
-            let start = start.unwrap();
+            let start = start;
             Net{nodes, start, all_starts}
         }
 
-        pub fn start(&self) -> &Node {
-            &self[self.start]
+        pub fn start(&self) -> Option<&Node> {
+            Some(&self[self.start?])
         }
         
         pub fn all_starts(&self) -> Vec<&Node> {
@@ -142,11 +144,12 @@ fn solve(input: &str) -> [String; 2] {
     let directions = lines.next().unwrap();
     lines.next();
     let network = net::Net::new(lines);
-    let mut pos = network.start();
     let mut count = 0;
-    while !at_end(pos) {
-        pos = pos.traverse(directions);
-        count += directions.len();
+    if let Some(mut pos) = network.start(){
+        while !at_end(pos) {
+            pos = pos.traverse(directions);
+            count += directions.len();
+        }
     }
     let mut pos_p2 = network.all_starts().into_boxed_slice();
     let mut count_p2 = 0;
