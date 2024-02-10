@@ -12,16 +12,16 @@ fn extrap_num(nums: &[i64]) -> (i64, i64) {
     let diff: Vec<_> = x1.iter().zip(x2).map(|(x1, x2)| x2 - x1).collect::<Vec<_>>();
     let (prev_diff, next_diff) = extrap_num(&*diff);
     let next_num = nums[len-1] + next_diff;
-    let prev_num = num[0]      - prev_diff;
-    (prev_diff, next_num)
+    let prev_num = nums[0]      - prev_diff;
+    (prev_num, next_num)
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let num_lists = inputs.lines()
+    let num_lists = input.lines()
         .map(|l| l.split(' ').map(|n| n.parse::<i64>().unwrap()).collect::<Vec<_>>());
     let sums = num_lists
-        .map(|l| next_num(&*l))
-        .reduce(|((sp, sn), (p, n))| => ((sp + p), (sn + n)));
+        .map(|l| extrap_num(&*l))
+        .reduce(|(sp, sn), (p, n)| ((sp + p), (sn + n))).unwrap();
     [
         sums.1.to_string(),
         sums.0.to_string()
