@@ -153,11 +153,20 @@ fn solve(input: &str) -> [String; 2] {
     }
     let mut pos_p2 = network.all_starts().into_boxed_slice();
     let mut count_p2 = 0;
-    while !all_at_ends(&pos_p2) {
-        for mut pos in pos_p2.iter_mut() {
-            *pos = pos.traverse(directions);
+    'top: loop {
+        for turn in directions.chars() {
+            for pos in pos_p2.iter_mut() {
+                *pos = match turn {
+                    'L' => pos.left,
+                    'R' => pos.right,
+                    _ => panic!()
+                };
+            }
+            count_p2 += 1;
+            if all_at_ends(pos_p2) {
+                break 'top;
+            }
         }
-        count_p2 += directions.len();
     }
     [
         count.to_string(),
