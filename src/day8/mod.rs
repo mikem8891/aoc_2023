@@ -152,25 +152,37 @@ fn solve(input: &str) -> [String; 2] {
         }
     }
     let mut pos_p2 = network.all_starts().into_boxed_slice();
-    let mut count_p2 = 0;
-    'top: loop {
-        for turn in directions.chars() {
-            for pos in pos_p2.iter_mut() {
-                *pos = match turn {
-                    'L' => pos.left,
-                    'R' => pos.right,
-                    _ => panic!()
-                };
-            }
-            count_p2 += 1;
-            if all_at_ends(&*pos_p2) {
-                break 'top;
+    let len = pos_p2.len();
+    let mut total_steps = vec![0; len];
+    let mut cycle_steps = vec![0; len];
+    for (i, pos) in pos_p2.iter_mut().enumerate() {
+        while !at_end(pos) {
+            pos.traverse(directions);
+            total_steps[i] += directions.len();
+        }
+    }
+    for (i, pos) in pos_p2.iter_mut().enumerate() {
+        while !at_end(pos) {
+            pos.traverse(directions);
+            cycle_steps[i] += directions.len();
+        }
+    }
+    let mut all_end = || total_steps.iter()
+            .map(|s| s == total_steps[0])
+            .reduce(|acc, s| acc && s);
+    while !all_end() {
+        while total_steps[0] < total_steps[len -1] {
+            total_steps[0] += cycle_steps[0];
+        }
+        for i in 1..len {
+            while total_steps[i] < total_steps[i - 1] {
+                total_steps[i] += cycle_steps[i];
             }
         }
     }
     [
         count.to_string(),
-        count_p2.to_string()
+        total_steps[0].to_string()
     ]
 }
 
