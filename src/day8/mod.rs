@@ -133,6 +133,7 @@ fn at_end(node: &net::Node) -> bool {
     }
 }
 
+#[allow(dead_code)]
 fn all_at_ends(nodes: &[&net::Node]) -> bool {
     nodes.into_iter()
         .map(|n| at_end(*n))
@@ -157,21 +158,23 @@ fn solve(input: &str) -> [String; 2] {
     let mut cycle_steps = vec![0; len];
     for (i, pos) in pos_p2.iter_mut().enumerate() {
         while !at_end(pos) {
-            pos.traverse(directions);
+            *pos = pos.traverse(directions);
             total_steps[i] += directions.len();
         }
     }
     for (i, pos) in pos_p2.iter_mut().enumerate() {
+        *pos = pos.traverse(directions);
+        cycle_steps[i] += directions.len();
         while !at_end(pos) {
-            pos.traverse(directions);
+            *pos = pos.traverse(directions);
             cycle_steps[i] += directions.len();
         }
     }
-    let mut all_end = || total_steps.iter()
-            .map(|s| s == total_steps[0])
-            .reduce(|acc, s| acc && s);
-    while !all_end() {
-        while total_steps[0] < total_steps[len -1] {
+    let all_end = |total_steps: &[usize]| total_steps.iter()
+            .map(|s| *s == total_steps[0])
+            .reduce(|acc, s| acc && s).unwrap();
+    while !all_end(&*total_steps) {
+        while total_steps[0] < total_steps[len - 1] {
             total_steps[0] += cycle_steps[0];
         }
         for i in 1..len {
