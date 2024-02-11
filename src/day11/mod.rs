@@ -1,4 +1,4 @@
-const DAY_NUM: &str = "10";
+const DAY_NUM: &str = "11";
 
 fn solve(input: &str) -> [String; 2] {
     
