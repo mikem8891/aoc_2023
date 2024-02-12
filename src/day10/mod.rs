@@ -1,6 +1,19 @@
 const DAY_NUM: &str = "10";
 
 fn solve(input: &str) -> [String; 2] {
+    let mut pipe_map: Vec<&[u8]> = input.lines()
+        .map(std::str::as_bytes)
+        .collect();
+    let mut start = None;
+    'find_start: for (r, line) in pipe_map.iter().enumerate() {
+        for (c, ch) in line.chars().enumerate() {
+            if ch == b'S' {
+                start = Some((r, c));
+                break 'find_start;
+            }
+        }
+    }
+    let start = start.expect("No start postion found");
     
     [
         "todo".to_string(),
