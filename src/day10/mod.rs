@@ -49,6 +49,24 @@ impl Direction {
     }
 }
 
+trait Move {
+    fn move(&mut self, dir: Direction) -> &mut Self;
+}
+
+impl Move for (usize, usize) {
+    fn move(&mut self, dir: Direction) -> &mut Self {
+        let (&mut r, &mut c) = self;
+        use Direction as D;
+        match dir {
+            D::Up => *r -= 1,
+            D::Left => *c -= 1,
+            D::Right => *c += 1,
+            D::Down => *r += 1
+        }
+        self
+    }
+}
+
 fn solve(input: &str) -> [String; 2] {
     let mut pipe_map: Vec<&[u8]> = input.lines()
         .map(std::str::as_bytes)
