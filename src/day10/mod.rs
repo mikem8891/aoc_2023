@@ -55,7 +55,7 @@ trait Move {
 
 impl Move for (usize, usize) {
     fn move(&mut self, dir: Direction) -> &mut Self {
-        let (&mut r, &mut c) = self;
+        let (r, c) = &mut self;
         use Direction as D;
         match dir {
             D::Up => *r -= 1,
