@@ -102,6 +102,20 @@ fn solve(input: &str) -> [String; 2] {
     if paths.len() != 2 {
         panic!("Expected 2 paths. Found {} path(s).", paths.len());
     }
+    let mut steps = 0;
+    'outer: loop {
+        steps += 1;
+        for i in 0..2 {
+            let (r, c) = paths[i]
+            let pipe = pipe_map[r][c];
+            path[i].move(pipe);
+            if path[0] == path[1] {
+                break 'outer;
+            } else if path[i] == start {
+                panic!("Paths did not converge");
+            }
+        }
+    }
     
     [
         "todo".to_string(),
