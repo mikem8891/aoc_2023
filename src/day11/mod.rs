@@ -1,7 +1,17 @@
 const DAY_NUM: &str = "11";
 
 fn solve(input: &str) -> [String; 2] {
-    
+    let star_map: Vec<_> = input.lines().map(|l| l.as_bytes()).collect();
+    let mut expanded_rows = vec![];
+    let mut expanded_cols = vec![];
+    for (i, row) in star_map.enumerate() {
+        let empty = row.iter()
+            .map(|s| s == b'.')
+            .reduce(|acc, s| acc && s);
+        if empty == Some(true) {
+            expanded_rows.push(i)
+        }
+    }
     [
         "todo".to_string(),
         "todo".to_string()
