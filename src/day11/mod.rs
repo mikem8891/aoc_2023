@@ -2,16 +2,20 @@ const DAY_NUM: &str = "11";
 
 fn solve(input: &str) -> [String; 2] {
     let star_map: Vec<_> = input.lines().map(|l| l.as_bytes()).collect();
-    let mut expanded_rows = vec![];
-    let mut expanded_cols = vec![];
-    for (i, row) in star_map.enumerate() {
-        let empty = row.iter()
+    let mut ex_rows = vec![];
+    let mut ex_cols = vec![];
+    for r in 0..star_map.len() {
+        let empty = star_map[r].iter()
             .map(|s| s == b'.')
-            .reduce(|acc, s| acc && s);
-        if empty == Some(true) {
-            expanded_rows.push(i)
+            .fold(true, |acc, s| acc && s);
+        let new_last = ex_row.last().unwrap() +
+            if empty {2} else {1};
+        ex_rows.push(new_last);
         }
     }
+    
+    
+    
     [
         "todo".to_string(),
         "todo".to_string()
