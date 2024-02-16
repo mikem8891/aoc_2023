@@ -1,10 +1,12 @@
 const DAY_NUM: &str = "10";
 
 trait Index2D<T> {
+    #[allow(non_snake_case)]
     fn get2D(&self, r: usize, c: usize) -> Option<&T>;
 }
 
-impl Index2D<T> for [&[T]] {
+impl<T> Index2D<T> for [&[T]] {
+    #[allow(non_snake_case)]
     fn get2D(&self, r: usize, c: usize) -> Option<&T> {
         self.get(r).map(|r| r.get(c)).flatten()
     }
@@ -29,7 +31,7 @@ impl Direction {
             },
             D::Left => match pipe {
                 b'L' => D::Up,
-                b'-' => D::Left
+                b'-' => D::Left,
                 b'F' => D::Down,
                 pipe => panic!("Can't travel LEFT thru '{}'", pipe as char)
             },
@@ -37,44 +39,44 @@ impl Direction {
                 b'J' => D::Up,
                 b'-' => D::Right,
                 b'7' => D::Down,
-                pipe => panic("Can't travel RIGHT thru '{}'", pipe as char)
+                pipe => panic!("Can't travel RIGHT thru '{}'", pipe as char)
             },
             D::Down => match pipe {
                 b'J' => D::Left,
                 b'L' => D::Right,
                 b'|' => D::Down,
-                pipe => panic("Can't travel DOWN thru '{}'", pipe as char)
+                pipe => panic!("Can't travel DOWN thru '{}'", pipe as char)
             }
         }
     }
 }
 
 trait Move {
-    fn move(&mut self, dir: Direction) -> &mut Self;
+    fn go(&mut self, dir: &Direction) -> &mut Self;
 }
 
 impl Move for (usize, usize) {
-    fn move(&mut self, dir: Direction) -> &mut Self {
-        let (r, c) = &mut self;
+    fn go(&mut self, dir: &Direction) -> &mut Self {
+        let (r, c) = self;
         use Direction as D;
         match dir {
-            D::Up => *r -= 1,
-            D::Left => *c -= 1,
+            D::Up    => *r -= 1,
+            D::Left  => *c -= 1,
             D::Right => *c += 1,
-            D::Down => *r += 1
+            D::Down  => *r += 1
         }
         self
     }
 }
 
 fn solve(input: &str) -> [String; 2] {
-    let mut pipe_map: Vec<&[u8]> = input.lines()
-        .map(std::str::as_bytes)
+    let pipe_map: Vec<&[u8]> = input.lines()
+        .map(str::as_bytes)
         .collect();
     let mut start = None;
     'find_start: for (r, line) in pipe_map.iter().enumerate() {
         for (c, ch) in line.iter().enumerate() {
-            if ch == b'S' {
+            if *ch == b'S' {
                 start = Some((r, c));
                 break 'find_start;
             }
@@ -82,43 +84,62 @@ fn solve(input: &str) -> [String; 2] {
     }
     let start = start.expect("No start postion found");
     let mut paths = vec![];
+    let mut directions = vec![];
     let (r, c) = start;
-    match pipe_map.get(r-1, c) {
-        Some(b'|' | b'7' | b'F') => paths.push((r-1, c)),
+    if r != 0  {
+        match pipe_map.get2D(r-1, c) {
+            Some(b'|' | b'7' | b'F') => {
+                paths.push((r-1, c));
+                directions.push(Direction::Up)
+            }
+            _ => ()
+        }
+    }
+    if c != 0 {
+        match pipe_map.get2D(r, c-1) {
+            Some(b'-' | b'L' | b'F') => {
+                paths.push((r, c-1));
+                directions.push(Direction::Left)
+            }
+            _ => ()
+        }
+    }
+    match pipe_map.get2D(r, c+1) {
+        Some(b'-' | b'7' | b'J') => {
+            paths.push((r, c+1));
+            directions.push(Direction::Right)
+        }
         _ => ()
     }
-    match pipe_map.get(r, c-1) {
-        Some(b'-' | b'L' | b'F') => paths.push((r, c-1)),
-        _ => ()
-    }
-    match pipe_map.get(r, c+1) {
-        Some(b'-' | b'7' | b'J') => paths.push((r, c+1)),
-        _ => ()
-    }
-    match pipe_map.get(r+1, c) {
-        Some(b'|' | b'L' | b'J') => paths.push((r+1, c)),
+    match pipe_map.get2D(r+1, c) {
+        Some(b'|' | b'L' | b'J') => {
+            paths.push((r+1, c));
+            directions.push(Direction::Down)
+        }
         _ => ()
     }
     if paths.len() != 2 {
         panic!("Expected 2 paths. Found {} path(s).", paths.len());
     }
-    let mut steps = 0;
+    let mut steps = 1;
     'outer: loop {
         steps += 1;
         for i in 0..2 {
-            let (r, c) = paths[i]
+            let (r, c) = paths[i];
             let pipe = pipe_map[r][c];
-            path[i].move(pipe);
-            if path[0] == path[1] {
+            let new_dirct = directions[i].thru_pipe(pipe);
+            paths[i].go(&new_dirct);
+            if paths[0] == paths[1] {
                 break 'outer;
-            } else if path[i] == start {
+            } else if paths[i] == start {
                 panic!("Paths did not converge");
             }
+            directions[i] = new_dirct;
         }
     }
     
     [
-        "todo".to_string(),
+        steps.to_string(),
         "todo".to_string()
     ]
 }

@@ -6,18 +6,18 @@ fn solve(input: &str) -> [String; 2] {
     let col_num = star_map[0].len();
     let mut ex_rows = Vec::with_capacity(row_num);
     let mut ex_cols = Vec::with_capacity(col_num);
-    ex_rows.push(0);
+    ex_rows.push(0u32);
     for r in 1..row_num {
         let empty = star_map[r].iter()
-            .map(|s| s == b'.')
+            .map(|s| *s == b'.')
             .fold(true, |acc, s| acc && s);
-        let new_last = ex_row.last().unwrap() +
+        let new_last = ex_rows.last().unwrap() +
             if empty {2} else {1};
         ex_rows.push(new_last);
     }
-    ex_cols.push(0);
+    ex_cols.push(0u32);
     for c in 1..col_num {
-        let empty = (0..row_num).iter()
+        let empty = (0..row_num).into_iter()
             .map(|r| star_map[r][c] == b'.')
             .fold(true, |acc, s| acc && s);
         let new_last = ex_cols[c-1] +
@@ -40,7 +40,7 @@ fn solve(input: &str) -> [String; 2] {
             let (r_t, c_t) = galaxies[to];
             let (r_f, c_f) = galaxies[from];
             let dist = r_t.abs_diff(r_f) + c_t.abs_diff(c_f);
-            sum =+ dist;
+            sum += dist;
         }
     }
     [
