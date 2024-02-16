@@ -31,7 +31,7 @@ pub fn solve(input: &str) -> (u64, u64) {
             *new_game_card_num += game_card_num;
         }
     }
-    let sum_2 = game_cards.iter().map(|(_k, v)| v).sum();
+    let sum_2 = game_cards.values().sum();
     (sum_1, sum_2)
 }
 

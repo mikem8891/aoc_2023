@@ -1,7 +1,7 @@
  pub fn trebuchet_calibration(cal_doc: &str) -> u64 {
      let mut sum = 0;
      for line in cal_doc.lines() {
-         let mut nums = line.chars().filter(|c| c.is_digit(10));
+         let mut nums = line.chars().filter(|c| c.is_ascii_digit());
          let first_digit = nums.next().unwrap();
          let last_digit = nums.last().unwrap_or(first_digit);
          let cal_val: String = [first_digit, last_digit].iter().collect();

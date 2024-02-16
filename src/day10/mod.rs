@@ -8,7 +8,7 @@ trait Index2D<T> {
 impl<T> Index2D<T> for [&[T]] {
     #[allow(non_snake_case)]
     fn get2D(&self, r: usize, c: usize) -> Option<&T> {
-        self.get(r).map(|r| r.get(c)).flatten()
+        self.get(r).and_then(|r| r.get(c))
     }
 }
 
@@ -87,36 +87,24 @@ fn solve(input: &str) -> [String; 2] {
     let mut directions = vec![];
     let (r, c) = start;
     if r != 0  {
-        match pipe_map.get2D(r-1, c) {
-            Some(b'|' | b'7' | b'F') => {
-                paths.push((r-1, c));
-                directions.push(Direction::Up)
-            }
-            _ => ()
+        if let Some(b'|' | b'7' | b'F') = pipe_map.get2D(r-1, c) {
+            paths.push((r-1, c));
+            directions.push(Direction::Up)
         }
     }
     if c != 0 {
-        match pipe_map.get2D(r, c-1) {
-            Some(b'-' | b'L' | b'F') => {
-                paths.push((r, c-1));
-                directions.push(Direction::Left)
-            }
-            _ => ()
+        if let Some(b'-' | b'L' | b'F') = pipe_map.get2D(r, c-1) {
+            paths.push((r, c-1));
+            directions.push(Direction::Left)
         }
     }
-    match pipe_map.get2D(r, c+1) {
-        Some(b'-' | b'7' | b'J') => {
-            paths.push((r, c+1));
-            directions.push(Direction::Right)
-        }
-        _ => ()
+    if let Some(b'-' | b'7' | b'J') = pipe_map.get2D(r, c+1) {
+        paths.push((r, c+1));
+        directions.push(Direction::Right)
     }
-    match pipe_map.get2D(r+1, c) {
-        Some(b'|' | b'L' | b'J') => {
-            paths.push((r+1, c));
-            directions.push(Direction::Down)
-        }
-        _ => ()
+    if let Some(b'|' | b'L' | b'J') = pipe_map.get2D(r+1, c) {
+        paths.push((r+1, c));
+        directions.push(Direction::Down)
     }
     if paths.len() != 2 {
         panic!("Expected 2 paths. Found {} path(s).", paths.len());

@@ -7,25 +7,24 @@ fn solve(input: &str) -> [String; 2] {
     let mut ex_rows = Vec::with_capacity(row_num);
     let mut ex_cols = Vec::with_capacity(col_num);
     ex_rows.push(0u32);
-    for r in 1..row_num {
-        let empty = star_map[r].iter()
-            .map(|s| *s == b'.')
-            .fold(true, |acc, s| acc && s);
+    for line in star_map.iter().skip(1) {
+        let empty = line.iter()
+            .all(|s| *s == b'.');
         let new_last = ex_rows.last().unwrap() +
             if empty {2} else {1};
         ex_rows.push(new_last);
     }
     ex_cols.push(0u32);
     for c in 1..col_num {
-        let empty = (0..row_num).into_iter()
-            .map(|r| star_map[r][c] == b'.')
-            .fold(true, |acc, s| acc && s);
+        let empty = (0..row_num)
+            .all(|r| star_map[r][c] == b'.');
         let new_last = ex_cols[c-1] +
             if empty {2} else {1};
         ex_cols.push(new_last);
     }
     let mut galaxies = vec![];
     for r in 0..row_num {
+        #[allow(clippy::needless_range_loop)]
         for c in 0..col_num {
             if star_map[r][c] == b'#' {
                 let galaxy = (ex_rows[r], ex_cols[c]);
