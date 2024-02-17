@@ -18,14 +18,15 @@
     ];
     let mut sum = 0;
     for line in cal_doc.lines() {
+        let is_digit = |c: char| c.is_ascii_digit();
         let num_at = |i| line[i..i+1].parse::<u8>().ok();
         let [mut first_digit, mut last_digit]: [Option<u8>; 2] = [None, None];
         let [mut begin, mut end] = [0, line.len()];
-        if let Some(index) = &line.find(char::is_ascii_digit) {
+        if let Some(index) = line.find(is_digit) {
             end = index + 1;
             first_digit = num_at(index);
         }
-        if let Some(index) = &line.rfind(char::is_ascii_digit) {
+        if let Some(index) = line.rfind(is_digit) {
             begin = index;
             last_digit = num_at(index);
         }
