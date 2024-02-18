@@ -39,15 +39,20 @@ fn permutations(line: &str) -> u32 {
     
     let mut trial_rec = String::new(rec);
     let mut count = 0;
+    let mut dam_cnt = 0;
     let check = |i: usize| {
         let i = trial_rec.find('?')
         if let Some(i) = i {
             let c = trial_rec.as_bytes_mut()[i];
             c = b'.';
             check(i + 1);
-            let c = trial_rec.as_bytes_mut()[i];
-            c = b'#';
-            check(i + 1);
+            if dam_cnt < unknown_dam {
+                let c = trial_rec.as_bytes_mut()[i];
+                c = b'#';
+                dam_cnt += 1;
+                check(i + 1);
+                dam_cnt -= 1;
+            }
             let c = trial_rec.as_bytes_mut()[i];
             c = b'?';
         } else {
