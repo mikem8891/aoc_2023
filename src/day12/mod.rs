@@ -24,10 +24,36 @@ fn permutations(line: &str) -> u32 {
         .map(|n| n.parse::<u8>().unwrap())
         .collect();
     
+    for cond in rec.as_bytes() {
+        
+    }
+    
     let total_dam = dam_gp.iter().sum();
     let known_dam = rec.bytes()
         .filter(|c| c == b'#').count();
     let unknown_dam = total_dam - known_dam;
+    
+    let unknown_idx: Vec<_> = rec.match_indices('?')
+        .map(|(i, _)| i).collect();
+    let unknowns = unknown_idx.len();
+    
+    let mut trial_rec = String::new(rec);
+    let mut count = 0;
+    let check = |i: usize| {
+        let i = trial_rec.find('?')
+        if let Some(i) = i {
+            let c = trial_rec.as_bytes_mut()[i];
+            c = b'.';
+            check(i + 1);
+            let c = trial_rec.as_bytes_mut()[i];
+            c = b'#';
+            check(i + 1);
+            let c = trial_rec.as_bytes_mut()[i];
+            c = b'?';
+        } else {
+            
+        }
+    }
     
     todo!();
 }
