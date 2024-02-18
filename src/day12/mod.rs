@@ -1,21 +1,5 @@
 const DAY_NUM: &str = "12";
 
-enum Condition {
-    Operational, Damaged, Unknown
-}
-
-impl From<u8> for Condition {
-    fn from(cond: u8) -> Self {
-        use Condition as C;
-        match cond{
-            b'.' => C::Operational,
-            b'#' => C::Damaged,
-            b'?' => C::Unknown,
-            err => panic!("expected '.', '#', '?'; found '{}'", err as char)
-        }
-    }
-}
-
 fn permutations(line: &str) -> u32 {
     let (rec, dam_gp) = line.split_once(' ')
         .expect("no space on line");
@@ -23,10 +7,6 @@ fn permutations(line: &str) -> u32 {
     let dam_gp: Vec<u8> = dam_gp.split(',')
         .map(|n| n.parse::<u8>().unwrap())
         .collect();
-    
-    for cond in rec.as_bytes() {
-        
-    }
     
     let total_dam = dam_gp.iter().sum();
     let known_dam = rec.bytes()
@@ -36,19 +16,23 @@ fn permutations(line: &str) -> u32 {
     let unknown_idx: Vec<_> = rec.match_indices('?')
         .map(|(i, _)| i).collect();
     let unknowns = unknown_idx.len();
+    let unknown_op = unknowns - unknown_dam;
     
     let mut trial_rec = String::new(rec);
     let mut count = 0;
-    let mut dam_cnt = 0;
+    let (mut dam_cnt, mut op_cnt) = (0, 0);
     let check = |i: usize| {
-        let i = trial_rec.find('?')
+        let i = trial_rec.find('?');
         if let Some(i) = i {
-            let c = trial_rec.as_bytes_mut()[i];
-            c = b'.';
-            check(i + 1);
+            assert!(op_cnt < unknown_op  || dam_cnt < unknown_dam);
+            if op_cnt < unknown_op {
+                *trial_rec.as_bytes_mut()[i] = b'.';
+                op_cnt += 1;
+                check(i + 1);
+                op_cnt -= 1;
+            }
             if dam_cnt < unknown_dam {
-                let c = trial_rec.as_bytes_mut()[i];
-                c = b'#';
+                *trial_rec.as_bytes_mut()[i] = b'#';
                 dam_cnt += 1;
                 check(i + 1);
                 dam_cnt -= 1;
@@ -56,11 +40,22 @@ fn permutations(line: &str) -> u32 {
             let c = trial_rec.as_bytes_mut()[i];
             c = b'?';
         } else {
-            
+            assert!(trial_rec.find('?').is_none());
+            let mut i = 0;
+            let trail_dam_gp = vec![];
+            while let Some(j_s) = trial_rec[i..].find('#') {
+                let j_e = trial_rec[j_s..].find('.')
+                    .unwrap_or(trial_rec.len());
+                trail_dam_gp.push(j_e - j_s);
+            }
+            assert!(trail_dam_gp.sum() == total_dam);
+            if dam_gp.iter().zip(&trail_dam_gp).all(|(a, b)| a == b) {
+                count += 1;
+            }
         }
     }
-    
-    todo!();
+    check(0);
+    count
 }
 
 fn solve(input: &str) -> [String; 2] {
