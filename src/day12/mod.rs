@@ -37,8 +37,7 @@ fn permutations(line: &str) -> u32 {
                 check(i + 1);
                 dam_cnt -= 1;
             }
-            let c = trial_rec.as_bytes_mut()[i];
-            c = b'?';
+            *trial_rec.as_bytes_mut()[i] = b'?';
         } else {
             assert!(trial_rec.find('?').is_none());
             let mut i = 0;
