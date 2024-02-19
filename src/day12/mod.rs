@@ -1,5 +1,7 @@
 const DAY_NUM: &str = "12";
 
+
+
 fn permutations(line: &str) -> u32 {
     let (rec, dam_gp) = line.split_once(' ')
         .expect("no space on line");
@@ -18,11 +20,21 @@ fn permutations(line: &str) -> u32 {
     let unknowns = unknown_idx.len();
     let unknown_op = unknowns - unknown_dam;
     
-    let mut trial_rec = String::new(rec);
+    let mut trial_rec = Vec::from(rec);
     let mut count = 0;
     let (mut dam_cnt, mut op_cnt) = (0, 0);
+    fn is(that: u8) {|this: u8| this == that}
+    fn perm_recur(rec: &mut [u8], dam_gp: &[u8]) -> u32 {
+        let i = trial_rec.iter().position(|c| c == b'?');
+        if let Some(i) = i {
+            
+        } else {
+            
+        }
+    }
     let check = |i: usize| {
-        let i = trial_rec.find('?');
+        let of = |a: u8| {|b: u8| a == b};
+        let i = trial_rec.iter().position(of(b'?'));
         if let Some(i) = i {
             assert!(op_cnt < unknown_op  || dam_cnt < unknown_dam);
             if op_cnt < unknown_op {
