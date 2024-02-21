@@ -10,7 +10,7 @@ fn permutations(line: &str) -> u32 {
     
     let total_dam = dam_gp.iter().sum();
     let known_dam = rec.bytes()
-        .filter(|c| c == b'#').count();
+        .filter(|c| *c == b'#').count();
     let unknown_dam = total_dam - known_dam;
     
     let unknown_idx: Vec<_> = rec.match_indices('?')
@@ -18,7 +18,7 @@ fn permutations(line: &str) -> u32 {
     let unknowns = unknown_idx.len();
     let unknown_op = unknowns - unknown_dam;
     
-    let mut trial_rec = String::new(rec);
+    let mut trial_rec = String::from(rec);
     let mut count = 0;
     let (mut dam_cnt, mut op_cnt) = (0, 0);
     let check = |i: usize| {
@@ -26,18 +26,18 @@ fn permutations(line: &str) -> u32 {
         if let Some(i) = i {
             assert!(op_cnt < unknown_op  || dam_cnt < unknown_dam);
             if op_cnt < unknown_op {
-                *trial_rec.as_bytes_mut()[i] = b'.';
+                unsafe{*trial_rec.as_bytes_mut()[i] = b'.';}
                 op_cnt += 1;
                 check(i + 1);
                 op_cnt -= 1;
             }
             if dam_cnt < unknown_dam {
-                *trial_rec.as_bytes_mut()[i] = b'#';
+                unsafe{*trial_rec.as_bytes_mut()[i] = b'#';}
                 dam_cnt += 1;
                 check(i + 1);
                 dam_cnt -= 1;
             }
-            *trial_rec.as_bytes_mut()[i] = b'?';
+            unsafe{*trial_rec.as_bytes_mut()[i] = b'?';}
         } else {
             assert!(trial_rec.find('?').is_none());
             let mut i = 0;
@@ -52,7 +52,7 @@ fn permutations(line: &str) -> u32 {
                 count += 1;
             }
         }
-    }
+    };
     check(0);
     count
 }
@@ -61,7 +61,7 @@ fn solve(input: &str) -> [String; 2] {
     let total_permutations = input.lines().map(permutations).sum();
     
     [
-        total_permutations.to_string(),
+        "todo".to_string(),
         "todo".to_string()
     ]
 }
