@@ -24,12 +24,33 @@ fn permutations(line: &str) -> u32 {
     let mut count = 0;
     let (mut dam_cnt, mut op_cnt) = (0, 0);
     fn is(that: u8) {|this: u8| this == that}
-    fn perm_recur(rec: &mut [u8], dam_gp: &[u8]) -> u32 {
-        let i = trial_rec.iter().position(|c| c == b'?');
+    struct State{
+        dam_gp: &[u8],
+        dam_rem:  u8,
+        op_rem:   u8
+    }
+    fn perm_recur(rec: &mut [u8], state: &mut State) -> u32 {
+        let i = rec.iter().position(|c| c == b'?');
         if let Some(i) = i {
-            
+            // create permutations
+            if *state.dam_rem > 0 {
+                *dam_rem -= 1;
+                rec[i] = b'#';
+                perm_recur(rec, state);
+                *dam_rem += 1;
+                rec[i] = b'?';
+            }
+            if op_rem > 0 {
+                *op_rem -= 1;
+                rec[i] = b'.';
+                perm_recur(rec, state);
+                *op_rem += 1;
+                rec[i] = b'?';
+            }
+            assert!(dam_rem > 0 || op_rem > 0);
         } else {
-            
+            // check permutation
+            if 
         }
     }
     let check = |i: usize| {
